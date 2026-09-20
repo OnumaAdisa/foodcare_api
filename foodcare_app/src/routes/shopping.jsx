@@ -1,6 +1,8 @@
 import { ArrowLeft, Share2, AlertCircle, Plus, ShoppingBasket, Trash2, Calendar as CalendarIcon, Sparkles, Check } from "lucide-react";
 import { useState, useEffect } from "react";
 
+const API_BASE = import.meta.env.VITE_API_BASE || (window.location.hostname === "localhost" ? "http://localhost:8080" : "http://127.0.0.1:8080");
+
 function ShoppingPage({ currentTab, onNavigate, user }) {
   const setActiveTab = onNavigate || (() => {});
 
@@ -38,7 +40,7 @@ function ShoppingPage({ currentTab, onNavigate, user }) {
   // 🌐 ฟังก์ชันยิง fetch ดึงข้อมูลรายการซื้อของจริง ๆ จาก Node.js หลังบ้านของคุณอ้น
   const fetchShoppingList = () => {
     setLoading(true);
-    fetch(`http://127.0.0.1:8080/api/shopping?householdId=${myHouseholdId}`)
+    fetch(`${API_BASE}/api/shopping?householdId=${myHouseholdId}`, { credentials: "include" })
       .then((res) => res.json())
       .then((resData) => {
         const list = resData.success ? resData.data : [];
@@ -66,8 +68,9 @@ function ShoppingPage({ currentTab, onNavigate, user }) {
 
   const handleToggleCheck = async (id, currentStatus) => {
     try {
-      await fetch("http://127.0.0.1:8080/api/shopping/toggle", {
+      await fetch(`${API_BASE}/api/shopping/toggle`, {
         method: "POST",
+        credentials: "include",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ shopId: id, isChecked: currentStatus ? 0 : 1 }),
       });
@@ -79,8 +82,9 @@ function ShoppingPage({ currentTab, onNavigate, user }) {
 
   const handleRemoveItem = async (id) => {
     try {
-      await fetch("http://127.0.0.1:8080/api/shopping/delete", {
+      await fetch(`${API_BASE}/api/shopping/delete`, {
         method: "POST",
+        credentials: "include",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ shopId: id }),
       });
@@ -92,8 +96,9 @@ function ShoppingPage({ currentTab, onNavigate, user }) {
 
   const handleAddSuggestion = async (sug) => {
     try {
-      await fetch("http://127.0.0.1:8080/api/shopping/add", {
+      await fetch(`${API_BASE}/api/shopping/add`, {
         method: "POST",
+        credentials: "include",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           householdId: myHouseholdId,
@@ -114,8 +119,9 @@ function ShoppingPage({ currentTab, onNavigate, user }) {
     const name = inputName.trim();
     if (!name) return;
     try {
-      await fetch("http://127.0.0.1:8080/api/shopping/add", {
+      await fetch(`${API_BASE}/api/shopping/add`, {
         method: "POST",
+        credentials: "include",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           householdId: myHouseholdId,
@@ -140,8 +146,9 @@ function ShoppingPage({ currentTab, onNavigate, user }) {
     }
     try {
       for (const item of checkedItems) {
-        await fetch("http://127.0.0.1:8080/api/fridge/add", {
+        await fetch(`${API_BASE}/api/fridge/add`, {
           method: "POST",
+          credentials: "include",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             name: item.name,
@@ -151,8 +158,9 @@ function ShoppingPage({ currentTab, onNavigate, user }) {
             householdId: myHouseholdId,
           }),
         });
-        await fetch("http://127.0.0.1:8080/api/shopping/delete", {
+        await fetch(`${API_BASE}/api/shopping/delete`, {
           method: "POST",
+          credentials: "include",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ shopId: item.id }),
         });

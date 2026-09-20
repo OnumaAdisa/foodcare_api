@@ -3,6 +3,8 @@ import { Calendar as CalendarIcon, Camera, Apple, Carrot, Egg, Fish, Milk, Salad
 import { useState } from "react";
 import { addItem } from "../components/foodcare/store";
 
+const API_BASE = import.meta.env.VITE_API_BASE || (window.location.hostname === "localhost" ? "http://localhost:8080" : "http://127.0.0.1:8080");
+
 export const Route = createFileRoute("/add")({
   component: AddItemPage,
   head: () => ({ meta: [{ title: "เพิ่มวัตถุดิบ — FoodCare" }] }),
@@ -17,10 +19,12 @@ const categories = [
   { id: "other", label: "อื่นๆ", icon: Salad, color: "bg-slate-500/10 text-slate-600 border-slate-500/20" },
 ];
 
-function AddItemPage({ onNavigate }) {
+function AddItemPage({ onNavigate, user }) {
   const handleBack = () => {
     if (typeof onNavigate === "function") onNavigate("fridge");
   };
+
+  const activeHouseholdId = user?.householdId ?? user?.household_id ?? null;
 
   const [name, setName] = useState("");
   const [qty, setQty] = useState("");
@@ -56,15 +60,16 @@ function AddItemPage({ onNavigate }) {
     }
 
     try {
-      const response = await fetch("http://127.0.0.1:8080/api/fridge/add", {
+      const response = await fetch(`${API_BASE}/api/fridge/add`, {
         method: "POST",
+        credentials: "include",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           itemName: name,
           quantity: qty,
           category: categories.find(c => c.id === cat)?.label || "อื่นๆ",
-          expiryDate: unknownExpiry ? null : date, // ✅ ส่ง null ถ้าไม่ทราบ
-          householdId: 1
+          expiryDate: unknownExpiry ? null : date,
+          householdId: activeHouseholdId ?? null
         }),
       });
 
@@ -72,6 +77,7 @@ function AddItemPage({ onNavigate }) {
 
       if (response.ok && data.success) {
         addItem({ id: Date.now().toString(), name, qty, category: cat, expiryDate: unknownExpiry ? null : date });
+        alert(data.householdId ? "บันทึกสำเร็จ สมาชิกในตู้เย็นเดียวกันจะได้รับการแจ้งเตือนแล้ว" : "บันทึกสำเร็จ ระบบจะแจ้งเตือนให้คุณทราบเมื่อมีการเปลี่ยนแปลงในตู้เย็นของคุณ");
         handleBack();
       } else {
         alert(data.message || "เกิดข้อผิดพลาดในการบันทึกข้อมูล");

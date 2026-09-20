@@ -1,6 +1,8 @@
 import { ArrowLeft, Minus, Plus, Trash2 } from "lucide-react";
 import { useState, useEffect } from "react";
 
+const API_BASE = import.meta.env.VITE_API_BASE || (window.location.hostname === "localhost" ? "http://localhost:8080" : "http://127.0.0.1:8080");
+
 function FridgeDetailPage({ itemId, onNavigate }) {
   const [item, setItem] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -8,7 +10,7 @@ function FridgeDetailPage({ itemId, onNavigate }) {
 
   // ✅ ดึงข้อมูลจาก DB จริงแทน store
   useEffect(() => {
-    fetch("http://127.0.0.1:8080/api/fridge")
+    fetch(`${API_BASE}/api/fridge`, { credentials: "include" })
       .then((res) => res.json())
       .then((resData) => {
         if (resData.success) {
@@ -41,8 +43,9 @@ function FridgeDetailPage({ itemId, onNavigate }) {
   // ✅ บันทึก % กลับไปที่ DB
   const save = async () => {
     try {
-      await fetch(`http://127.0.0.1:8080/api/fridge/update/${item.id}`, {
+      await fetch(`${API_BASE}/api/fridge/update/${item.id}`, {
         method: "PUT",
+        credentials: "include",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ remaining_percent: pct }),
       });
@@ -56,8 +59,9 @@ function FridgeDetailPage({ itemId, onNavigate }) {
   const useUp = async () => {
     if (!window.confirm(`คุณใช้ "${item?.name}" หมดเกลี้ยงแล้วใช่ไหมคราบบบ?`)) return;
     try {
-      await fetch(`http://127.0.0.1:8080/api/fridge/delete/${item.id}`, {
+      await fetch(`${API_BASE}/api/fridge/delete/${item.id}`, {
         method: "DELETE",
+        credentials: "include",
       });
     } catch (err) {
       console.error("Error deleting:", err);

@@ -2,13 +2,15 @@ import { ChefHat, Check, Heart, Share2, ArrowLeft } from "lucide-react";
 import { useState, useEffect } from "react";
 import { recipes } from "../components/foodcare/data";
 
+const API_BASE = import.meta.env.VITE_API_BASE || (window.location.hostname === "localhost" ? "http://localhost:8080" : "http://127.0.0.1:8080");
+
 function RecipeDetail({ recipeId, onBack, onStartCooking, user }) {
   const r = recipes.find((x) => x.id === recipeId) || recipes[0];
   const [fridgeItems, setFridgeItems] = useState([]);
 
   // ✅ ดึงวัตถุดิบในตู้เย็นจริงมาเช็ค
   useEffect(() => {
-    fetch("http://127.0.0.1:8080/api/fridge")
+    fetch(`${API_BASE}/api/fridge`, { credentials: "include" })
       .then((res) => res.json())
       .then((resData) => {
         if (resData.success) {

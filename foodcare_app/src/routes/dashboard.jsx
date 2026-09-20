@@ -4,6 +4,8 @@ import { useState, useEffect } from "react";
 import { FoodRow } from "../components/foodcare/FoodRow";
 import { recipes } from "../components/foodcare/data";
 
+const API_BASE = import.meta.env.VITE_API_BASE || (window.location.hostname === "localhost" ? "http://localhost:8080" : "http://127.0.0.1:8080");
+
 // 🟢 นำเข้า initial items จาก QuickAddPage เพื่อนับจำนวนวัตถุดิบที่ใช้ประจำ
 const QUICK_ITEMS_DEFAULT_COUNT = 6; // ตรงกับจำนวน initial array ใน QuickAddPage
 
@@ -35,7 +37,7 @@ function Dashboard({ currentTab, onNavigate, onLogout, user }) {
 
   useEffect(() => {
     setIsLoading(true);
-    fetch("http://127.0.0.1:8080/api/fridge")
+    fetch(`${API_BASE}/api/fridge`, { credentials: "include" })
       .then((res) => res.json())
       .then((resData) => {
         if (resData.success) {

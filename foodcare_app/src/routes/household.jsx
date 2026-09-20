@@ -2,6 +2,8 @@ import { createFileRoute } from "@tanstack/react-router";
 import { Copy, Crown, LogOut, RefreshCw, Trash2, UserPlus, Users, ArrowLeft } from "lucide-react";
 import { useState, useEffect } from "react";
 
+const API_BASE = import.meta.env.VITE_API_BASE || (window.location.hostname === "localhost" ? "http://localhost:8080" : "http://127.0.0.1:8080");
+
 export const Route = createFileRoute("/household")({
   component: HouseholdPage,
   head: () => ({ meta: [{ title: "แชร์ตู้เย็นอัจฉริยะ — FoodCare" }] }),
@@ -54,7 +56,7 @@ function HouseholdPage({ onNavigate, user }) {
     }
 
     try {
-      const response = await fetch("http://127.0.0.1:8080/api/household/create", {
+      const response = await fetch(`${API_BASE}/api/household/create`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -100,7 +102,7 @@ function HouseholdPage({ onNavigate, user }) {
     }
 
     try {
-      const response = await fetch("http://127.0.0.1:8080/api/household/join", {
+      const response = await fetch(`${API_BASE}/api/household/join`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -258,7 +260,7 @@ function HouseholdPage({ onNavigate, user }) {
                     if (window.confirm("คุณแน่ใจใช่ไหมที่จะแยกย้ายออกจากกลุ่มตู้เย็นใบนี้?")) {
                       const activeUserId = user?.id || user?.userId || user?.user_id;
                       try {
-                        const response = await fetch("http://127.0.0.1:8080/api/household/leave", {
+                        const response = await fetch(`${API_BASE}/api/household/leave`, {
                           method: "POST",
                           headers: { "Content-Type": "application/json" },
                           body: JSON.stringify({ userId: activeUserId })

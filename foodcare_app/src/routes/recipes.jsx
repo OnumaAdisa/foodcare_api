@@ -3,6 +3,8 @@ import { ChefHat, Refrigerator, Search, Clock, Sparkles, ChevronRight, User as U
 import { useState, useEffect } from "react";
 import { recipes as staticRecipes } from "../components/foodcare/data";
 
+const API_BASE = import.meta.env.VITE_API_BASE || (window.location.hostname === "localhost" ? "http://localhost:8080" : "http://127.0.0.1:8080");
+
 export const Route = createFileRoute("/recipes")({
   component: Recipes,
   head: () => ({ meta: [{ title: "เมนูสร้างสรรค์อัจฉริยะ — FoodCare" }] }),
@@ -19,7 +21,7 @@ function Recipes({ currentTab, onNavigate, onSelectRecipe, user }) {
 
   useEffect(() => {
     setLoading(true);
-    fetch("http://127.0.0.1:8080/api/fridge")
+    fetch(`${API_BASE}/api/fridge`, { credentials: "include" })
       .then((res) => res.json())
       .then((resData) => {
         if (resData.success) {

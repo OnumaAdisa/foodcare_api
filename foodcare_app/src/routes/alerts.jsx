@@ -1,26 +1,78 @@
 import { AlertTriangle, ArrowLeft, Bell, BellOff, ChefHat, Leaf, ShoppingBasket, Refrigerator } from "lucide-react";
 import { useState, useEffect } from "react";
 
+const API_BASE = import.meta.env.VITE_API_BASE || (window.location.hostname === "localhost" ? "http://localhost:8080" : "http://127.0.0.1:8080");
+
 function AlertsPage({ onNavigate, user }) {
   // 🗄️ ปรับมาใช้ State รับข้อมูลวัตถุดิบอาหารที่ยิงตรงมาจากฐานข้อมูลจริง
   const [foodItems, setFoodItems] = useState([]);
+  const [notifications, setNotifications] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // 🌐 ยิง fetch ดึงข้อมูลของในตู้เย็นตามสิทธิ์บ้านของ User จริงเพื่อนำมาคำนวณวันหมดอายุ
-  useEffect(() => {
+  const fetchAlertData = async () => {
+    if (!user) return;
+
     setLoading(true);
-    fetch("http://127.0.0.1:8080/api/fridge")
-      .then((res) => res.json())
-      .then((resData) => {
-        if (resData.success) {
-          const myHouseholdId = user?.householdId || 0;
-          const myItems = resData.data.filter(item => item.household_id === myHouseholdId);
-          setFoodItems(myItems);
+    try {
+      const [fridgeRes, notifRes] = await Promise.all([
+        fetch(`${API_BASE}/api/fridge`, { credentials: "include" }),
+        fetch(`${API_BASE}/api/notifications`, { credentials: "include" }),
+      ]);
+
+      const fridgeData = await fridgeRes.json();
+      const notifData = await notifRes.json();
+
+      if (fridgeData.success) {
+        const myUserId = Number(user?.user_id ?? user?.id ?? 0);
+        const myHouseholdId = Number(user?.householdId ?? user?.household_id ?? 0);
+
+        const myItems = (fridgeData.data || []).filter((item) => {
+          const itemHouseholdId = Number(item.household_id ?? 0);
+          const itemUserId = Number(item.user_id ?? 0);
+
+          if (myHouseholdId > 0) {
+            return itemHouseholdId === myHouseholdId;
+          }
+
+          return itemUserId === myUserId;
+        });
+
+        setFoodItems(myItems);
+      }
+
+      if (notifData.success) {
+        const nextNotifications = notifData.data || [];
+        setNotifications(nextNotifications);
+
+        if (nextNotifications.some((note) => !note.is_read)) {
+          fetch(`${API_BASE}/api/notifications/read`, {
+            method: "POST",
+            credentials: "include",
+            headers: { "Content-Type": "application/json" },
+          }).catch(() => {});
         }
-      })
-      .catch((err) => console.error("Error fetching items for alerts:", err))
-      .finally(() => setLoading(false));
+      }
+    } catch (err) {
+      console.error("Error fetching items for alerts:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchAlertData();
+
+    const handleUpdate = () => fetchAlertData();
+    window.addEventListener("fridge_store_updated", handleUpdate);
+    const interval = setInterval(fetchAlertData, 6000);
+
+    return () => {
+      window.removeEventListener("fridge_store_updated", handleUpdate);
+      clearInterval(interval);
+    };
   }, [user]);
+
+  const unreadCount = notifications.filter((note) => !note.is_read).length;
 
   // แยกวัตถุดิบ: ด่วนมาก (เหลือเวลา <= 1 วัน) และ ใกล้หมดอายุ (เหลือเวลา <= 3 วัน)
   const urgent = foodItems.filter((i) => {
@@ -65,8 +117,13 @@ function AlertsPage({ onNavigate, user }) {
                 <p className="text-[10px] font-bold text-slate-400 mt-0.5">วัตถุดิบใกล้หมดอายุของคุณ</p>
               </div>
             </div>
-            <button type="button" className="h-10 w-10 rounded-xl bg-white border border-slate-200/60 shadow-sm grid place-items-center text-slate-400 hover:text-slate-600 active:scale-95 transition-all focus:outline-none">
+            <button type="button" className="relative h-10 w-10 rounded-xl bg-white border border-slate-200/60 shadow-sm grid place-items-center text-slate-400 hover:text-slate-600 active:scale-95 transition-all focus:outline-none">
               <BellOff className="h-4.5 w-4.5" />
+              {unreadCount > 0 && (
+                <span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1 rounded-full bg-rose-500 text-[9px] font-black text-white flex items-center justify-center">
+                  {unreadCount > 9 ? "9+" : unreadCount}
+                </span>
+              )}
             </button>
           </header>
 
@@ -90,6 +147,28 @@ function AlertsPage({ onNavigate, user }) {
                 </div>
               </div>
             </div>
+
+            <section className="space-y-2.5">
+              <h3 className="text-xs font-black text-slate-700 flex items-center gap-2 px-1">
+                <span className="h-2 w-2 rounded-full bg-indigo-500" /> แจ้งเตือนจากตู้เย็น
+              </h3>
+              <div className="space-y-2">
+                {notifications.length === 0 ? (
+                  <div className="rounded-2xl border border-dashed border-slate-200 bg-white/40 p-4 text-center text-[11px] font-bold text-slate-400">
+                    ยังไม่มีการแจ้งเตือนจากสมาชิกในตู้เย็นนี้
+                  </div>
+                ) : (
+                  notifications.slice(0, 4).map((note) => (
+                    <div key={note.id} className="rounded-2xl bg-white border border-slate-100 p-3 shadow-sm">
+                      <p className="text-[11px] font-black text-slate-700">{note.message}</p>
+                      <p className="text-[10px] font-bold text-slate-400 mt-1">
+                        {new Date(note.created_at).toLocaleString("th-TH", { dateStyle: "medium", timeStyle: "short" })}
+                      </p>
+                    </div>
+                  ))
+                )}
+              </div>
+            </section>
 
             {/* Section: Urgent Items (1 Day left) */}
             <section className="space-y-2.5">

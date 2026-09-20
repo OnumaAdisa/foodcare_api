@@ -1,6 +1,8 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Login from "./routes/login";
 import Signup from "./routes/signup";
+
+const API_BASE = import.meta.env.VITE_API_BASE || (window.location.hostname === "localhost" ? "http://localhost:8080" : "http://127.0.0.1:8080");
 import Dashboard from "./routes/dashboard"; 
 import Fridge from "./routes/fridge";       
 import AddItemPage from "./routes/add";     
@@ -22,6 +24,29 @@ function App() {
 
   // 🟢 1. เพิ่มสเตทส่วนกลางสำหรับเก็บข้อมูลผู้ใช้งานที่ทำการล็อกอินสำเร็จ
   const [currentUser, setCurrentUser] = useState(null); 
+
+  useEffect(() => {
+    fetch(`${API_BASE}/api/auth/session`, { credentials: "include" })
+      .then((res) => res.ok ? res.json() : Promise.reject(new Error("No session")))
+      .then((data) => {
+        if (data.success && data.user) {
+          const normalizedUser = {
+            ...data.user,
+            id: data.user.id ?? data.user.user_id ?? data.user.userId,
+            user_id: data.user.user_id ?? data.user.id ?? data.user.userId,
+            householdId: data.user.householdId ?? data.user.household_id ?? null,
+            household_id: data.user.household_id ?? data.user.householdId ?? null,
+          };
+          setCurrentUser(normalizedUser);
+          setScreen("main_app");
+          setCurrentTab("home");
+        }
+      })
+      .catch(() => {
+        setCurrentUser(null);
+        setScreen("login");
+      });
+  }, []);
 
   const handleNavigate = (tabName, itemId = null) => {
     setCurrentTab(tabName);
@@ -58,7 +83,12 @@ function App() {
   };
 
   // 🟢 2. ตอนออกจากระบบ ให้เคลียร์ข้อมูลผู้ใช้ทิ้งเพื่อความปลอดภัย
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    try {
+      await fetch(`${API_BASE}/api/auth/logout`, { method: "POST", credentials: "include" });
+    } catch (error) {
+      console.warn("Logout request failed:", error);
+    }
     setCurrentUser(null);
     setScreen("login");
     setCurrentTab("home");
@@ -69,7 +99,13 @@ function App() {
     return (
       <Login 
         onLogin={(userData) => { 
-          setCurrentUser(userData); // 🟢 บันทึกข้อมูล { id, username, householdId } ลงหน่วยความจำแอป
+          setCurrentUser({
+            ...userData,
+            id: userData?.id ?? userData?.user_id ?? userData?.userId,
+            user_id: userData?.user_id ?? userData?.id ?? userData?.userId,
+            householdId: userData?.householdId ?? userData?.household_id ?? null,
+            household_id: userData?.household_id ?? userData?.householdId ?? null,
+          });
           setScreen("main_app"); 
           setCurrentTab("home"); 
         }} 
@@ -78,7 +114,24 @@ function App() {
     );
   }
 
-  if (screen === "signup") return <Signup onSwitchToLogin={() => setScreen("login")} />;
+  if (screen === "signup") {
+    return (
+      <Signup
+        onSwitchToLogin={() => setScreen("login")}
+        onLogin={(userData) => {
+          setCurrentUser({
+            ...userData,
+            id: userData?.id ?? userData?.user_id ?? userData?.userId,
+            user_id: userData?.user_id ?? userData?.id ?? userData?.userId,
+            householdId: userData?.householdId ?? userData?.household_id ?? null,
+            household_id: userData?.household_id ?? userData?.householdId ?? null,
+          });
+          setScreen("main_app");
+          setCurrentTab("home");
+        }}
+      />
+    );
+  }
   
   if (screen === "main_app") {
     if (currentTab === "fridge") return <Fridge currentTab={currentTab} onNavigate={handleNavigate} onLogout={handleLogout} user={currentUser} />;

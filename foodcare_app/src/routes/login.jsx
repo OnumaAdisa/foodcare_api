@@ -2,6 +2,8 @@ import { Mail, Lock, Eye, EyeOff, User } from "lucide-react";
 import { useState } from "react";
 import logoImg from '../assets/logo.jpg';
 
+const API_BASE = import.meta.env.VITE_API_BASE || (window.location.hostname === "localhost" ? "http://localhost:8080" : "http://127.0.0.1:8080");
+
 function Login({ onLogin, onSwitchToSignup }) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -17,8 +19,9 @@ function Login({ onLogin, onSwitchToSignup }) {
     }
 
     // 🌐 ยิงเชื่อมระบบส่งข้อมูลตรวจสอบกับ Node.js หลังบ้านจริง
-    fetch("http://127.0.0.1:8080/api/login", {
+    fetch(`${API_BASE}/api/login`, {
       method: "POST",
+      credentials: "include",
       headers: { 
         "Content-Type": "application/json" 
       },
@@ -34,8 +37,12 @@ function Login({ onLogin, onSwitchToSignup }) {
         if (typeof onLogin === "function") {
           onLogin({
             id: data.user.user_id || data.user.id,
+            user_id: data.user.user_id || data.user.id,
             username: data.user.username,
-            householdId: data.user.household_id || null
+            email: data.user.email || "",
+            phone: data.user.phone || "",
+            householdId: data.user.household_id || null,
+            household_id: data.user.household_id || null
           });
         }
       } else {
