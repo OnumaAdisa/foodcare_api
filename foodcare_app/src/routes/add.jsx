@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { Calendar as CalendarIcon, Camera, Apple, Carrot, Egg, Fish, Milk, Salad, ArrowLeft } from "lucide-react";
 import { useState } from "react";
 import { addItem } from "../components/foodcare/store";
+import { FoodIcon } from "../components/foodcare/foodIcons";
 
 const API_BASE = import.meta.env.VITE_API_BASE || (window.location.hostname === "localhost" ? "http://localhost:8080" : "http://127.0.0.1:8080");
 
@@ -24,7 +25,17 @@ function AddItemPage({ onNavigate, user }) {
     if (typeof onNavigate === "function") onNavigate("fridge");
   };
 
-  const activeHouseholdId = user?.householdId ?? user?.household_id ?? null;
+  const localUser = (() => {
+    try {
+      const saved = localStorage.getItem("foodcare_user");
+      return saved ? JSON.parse(saved) : null;
+    } catch {
+      return null;
+    }
+  })();
+  const effectiveUser = user || localUser;
+  const activeHouseholdId = effectiveUser?.householdId ?? effectiveUser?.household_id ?? null;
+  const safeUserId = effectiveUser?.id ?? effectiveUser?.user_id ?? null;
 
   const [name, setName] = useState("");
   const [qty, setQty] = useState("");
@@ -63,13 +74,17 @@ function AddItemPage({ onNavigate, user }) {
       const response = await fetch(`${API_BASE}/api/fridge/add`, {
         method: "POST",
         credentials: "include",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          ...(safeUserId ? { "Authorization": `Bearer ${safeUserId}` } : {})
+        },
         body: JSON.stringify({
           itemName: name,
           quantity: qty,
           category: categories.find(c => c.id === cat)?.label || "อื่นๆ",
           expiryDate: unknownExpiry ? null : date,
-          householdId: activeHouseholdId ?? null
+          householdId: activeHouseholdId ?? null,
+          userId: safeUserId
         }),
       });
 
@@ -89,7 +104,7 @@ function AddItemPage({ onNavigate, user }) {
   };
 
   return (
-    <div className="min-h-screen bg-[radial-gradient(ellipse_at_top_left,_var(--tw-gradient-stops))] from-indigo-50 via-slate-50 to-emerald-50 flex items-center justify-center p-4 font-sans select-none antialiased">
+    <div className="min-h-screen bg-white flex items-center justify-center p-4 font-sans select-none antialiased">
       <div className="relative z-10 w-full max-w-[390px]">
         <div className="w-full h-[844px] bg-slate-50/70 backdrop-blur-3xl rounded-[60px] border-4 border-slate-900/90 shadow-[0_40px_100px_-30px_rgba(15,23,42,0.3)] flex flex-col relative overflow-hidden ring-1 ring-white/40">
 
@@ -99,8 +114,8 @@ function AddItemPage({ onNavigate, user }) {
             <div className="w-2 h-2 rounded-full bg-blue-500/40 border border-blue-400/20"></div>
           </div>
 
-          <header className="px-6 pt-14 pb-4 flex items-center justify-between z-30 relative bg-white/40 backdrop-blur-md border-b border-slate-200/30">
-            <div className="flex items-center gap-2">
+          <header className="px-5 pt-13 pb-3 flex items-center justify-between z-30 relative bg-white/40 backdrop-blur-md border-b border-slate-200/30">
+            <div className="flex items-center gap-2.5">
               <button type="button" onClick={handleBack} className="h-9 w-9 rounded-xl border border-slate-200/50 bg-white shadow-sm flex items-center justify-center text-slate-600 active:scale-90 duration-150 focus:outline-none">
                 <ArrowLeft className="h-4 w-4 stroke-[2.5]" />
               </button>
@@ -111,44 +126,58 @@ function AddItemPage({ onNavigate, user }) {
             </div>
           </header>
 
-          <form onSubmit={handleSubmit} className="flex-1 px-5 space-y-4 pt-4 pb-10 style-scrollbar overflow-y-auto bg-gradient-to-b from-transparent to-slate-50/50">
+          <form onSubmit={handleSubmit} className="flex-1 px-4.5 space-y-3.5 pt-3.5 pb-8 style-scrollbar overflow-y-auto bg-gradient-to-b from-transparent to-slate-50/50">
 
             <div>
               <button
                 type="button"
                 onClick={() => onNavigate("scan")}
-                className="w-full rounded-2xl border border-dashed border-indigo-200 p-4 flex flex-col items-center bg-white/60 hover:bg-white active:scale-[0.99] transition-all focus:outline-none group"
+                className="w-full rounded-2xl border border-dashed border-indigo-200 p-3.5 flex flex-col items-center bg-white/60 hover:bg-white active:scale-[0.99] transition-all focus:outline-none group shadow-xs"
               >
-                <div className="h-11 w-11 rounded-xl bg-gradient-to-tr from-indigo-500 to-blue-500 text-white grid place-items-center shadow-md shadow-indigo-500/20">
-                  <Camera className="h-5 w-5 animate-pulse" />
+                <div className="h-10 w-10 rounded-xl bg-gradient-to-tr from-indigo-500 to-blue-500 text-white grid place-items-center shadow-md shadow-indigo-500/20">
+                  <Camera className="h-4.5 w-4.5 animate-pulse" />
                 </div>
-                <p className="mt-2 text-sm font-black text-slate-700">สแกนภาพด้วย AI</p>
-                <p className="text-[10px] font-bold text-slate-400 mt-0.5 text-center">ถ่ายรูปวัตถุดิบของกินเพื่อกรอกข้อมูลอัตโนมัติ</p>
+                <p className="mt-1.5 text-xs font-black text-slate-700">สแกนภาพด้วย AI</p>
+                <p className="text-[10px] font-medium text-slate-400 mt-0.5 text-center">ถ่ายรูปวัตถุดิบของกินเพื่อกรอกข้อมูลอัตโนมัติ</p>
               </button>
             </div>
 
-            <div className="space-y-3">
+            <div className="space-y-2.5">
               <div>
-                <label className="text-[11px] font-black text-slate-400 uppercase tracking-wide px-1">ชื่อวัตถุดิบ</label>
-                <input value={name} onChange={(e) => setName(e.target.value)} placeholder="เช่น มะเขือเทศ, อกไก่" className="mt-1.5 w-full px-4 h-12 rounded-2xl bg-white border border-slate-200/60 shadow-sm outline-none text-sm font-bold text-slate-700 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/5 transition-all duration-200" />
+                <label className="text-[10.5px] font-black text-slate-400 uppercase tracking-wide px-1">ชื่อวัตถุดิบ</label>
+                <div className="relative flex items-center mt-1">
+                  <input
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    placeholder="เช่น มะเขือเทศ, อกไก่, นมสด"
+                    className="w-full pl-3.5 pr-12 h-11 rounded-2xl bg-white border border-slate-200/70 shadow-xs outline-none text-xs font-bold text-slate-700 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/5 transition-all duration-200"
+                  />
+                  <div className="absolute right-1.5 top-1.5">
+                    <FoodIcon
+                      name={name}
+                      category={categories.find(c => c.id === cat)?.label}
+                      className="h-8 w-8 rounded-xl bg-slate-50 border border-slate-100 p-1 shadow-inner"
+                    />
+                  </div>
+                </div>
               </div>
               <div>
-                <label className="text-[11px] font-black text-slate-400 uppercase tracking-wide px-1">ปริมาณ (หน่วย)</label>
-                <input value={qty} onChange={(e) => setQty(e.target.value)} placeholder="เช่น 500 กรัม, 3 ลูก" className="mt-1.5 w-full px-4 h-12 rounded-2xl bg-white border border-slate-200/60 shadow-sm outline-none text-sm font-bold text-slate-700 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/5 transition-all duration-200" />
+                <label className="text-[10.5px] font-black text-slate-400 uppercase tracking-wide px-1">ปริมาณ (หน่วย)</label>
+                <input value={qty} onChange={(e) => setQty(e.target.value)} placeholder="เช่น 500 กรัม, 3 ลูก" className="mt-1 w-full px-3.5 h-11 rounded-2xl bg-white border border-slate-200/70 shadow-xs outline-none text-xs font-bold text-slate-700 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/5 transition-all duration-200" />
               </div>
             </div>
 
             <div>
-              <label className="text-[11px] font-black text-slate-400 uppercase tracking-wide px-1">หมวดหมู่</label>
-              <div className="mt-2 grid grid-cols-3 gap-2">
+              <label className="text-[10.5px] font-black text-slate-400 uppercase tracking-wide px-1">หมวดหมู่</label>
+              <div className="mt-1.5 grid grid-cols-3 gap-2">
                 {categories.map((c) => {
                   const active = cat === c.id;
                   return (
-                    <button type="button" key={c.id} onClick={() => setCat(c.id)} className={`flex flex-col items-center gap-1.5 py-2.5 rounded-2xl border transition-all duration-200 focus:outline-none ${active ? "border-indigo-500 bg-white shadow-md shadow-indigo-500/5 scale-105" : "border-slate-200/60 bg-white/50 hover:bg-white"}`}>
-                      <div className={`h-8 w-8 rounded-xl grid place-items-center border ${c.color} ${active ? "scale-105" : ""}`}>
-                        <c.icon className="h-4 w-4 stroke-[2.5]" />
+                    <button type="button" key={c.id} onClick={() => setCat(c.id)} className={`flex flex-col items-center gap-1 py-2 rounded-2xl border transition-all duration-200 focus:outline-none ${active ? "border-indigo-500 bg-white shadow-xs scale-102" : "border-slate-200/60 bg-white/50 hover:bg-white"}`}>
+                      <div className={`h-7.5 w-7.5 rounded-xl grid place-items-center border ${c.color} ${active ? "scale-105" : ""}`}>
+                        <c.icon className="h-3.5 w-3.5 stroke-[2.5]" />
                       </div>
-                      <span className={`text-[11px] font-extrabold ${active ? "text-slate-800" : "text-slate-500"}`}>{c.label}</span>
+                      <span className={`text-[10.5px] font-extrabold ${active ? "text-slate-800" : "text-slate-500"}`}>{c.label}</span>
                     </button>
                   );
                 })}
@@ -157,14 +186,14 @@ function AddItemPage({ onNavigate, user }) {
 
             {/* ✅ ส่วนวันหมดอายุพร้อมปุ่มไม่ทราบ */}
             <div>
-              <label className="text-[11px] font-black text-slate-400 uppercase tracking-wide px-1 flex items-center gap-1">
+              <label className="text-[10.5px] font-black text-slate-400 uppercase tracking-wide px-1 flex items-center gap-1">
                 <CalendarIcon className="h-3.5 w-3.5 text-indigo-500" /> วันหมดอายุผลิตภัณฑ์
               </label>
 
               <button
                 type="button"
                 onClick={() => setUnknownExpiry(!unknownExpiry)}
-                className={`mt-2 w-full py-2.5 rounded-2xl border text-xs font-black transition-all duration-200 focus:outline-none ${
+                className={`mt-1.5 w-full py-2 rounded-2xl border text-xs font-black transition-all duration-200 focus:outline-none ${
                   unknownExpiry
                     ? "border-amber-400 bg-amber-50 text-amber-600"
                     : "border-slate-200/60 bg-white/50 text-slate-400 hover:bg-white"
@@ -174,7 +203,7 @@ function AddItemPage({ onNavigate, user }) {
               </button>
 
               {!unknownExpiry && (
-                <div className="mt-2 rounded-3xl bg-white border border-slate-200/60 p-3.5 shadow-sm">
+                <div className="mt-2 rounded-[22px] bg-white border border-slate-200/70 p-3 shadow-sm">
                   <div className="flex items-center justify-between mb-2">
                     <button type="button" onClick={() => setViewMonth(new Date(viewMonth.getFullYear(), viewMonth.getMonth() - 1, 1))} className="h-7 w-7 rounded-lg border border-slate-100 flex items-center justify-center font-bold text-slate-500 hover:bg-slate-50 active:scale-95 transition-all">‹</button>
                     <span className="text-xs font-black text-slate-700">{monthLabel}</span>
@@ -199,7 +228,7 @@ function AddItemPage({ onNavigate, user }) {
               )}
             </div>
 
-            <button type="submit" className="w-full h-13 mt-4 rounded-2xl text-white font-black text-sm shadow-[0_8px_25px_rgba(79,70,229,0.35)] hover:brightness-105 active:scale-[0.98] transition-all duration-150 focus:outline-none" style={{ background: "linear-gradient(135deg, #4f46e5 0%, #3b82f6 100%)" }}>
+            <button type="submit" className="w-full h-12 mt-3 rounded-2xl text-white font-black text-xs shadow-md shadow-indigo-500/25 hover:brightness-105 active:scale-[0.98] transition-all duration-150 focus:outline-none" style={{ background: "linear-gradient(135deg, #4f46e5 0%, #3b82f6 100%)" }}>
               บันทึกเข้าตู้เย็นอัจฉริยะ
             </button>
           </form>
