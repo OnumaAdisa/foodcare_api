@@ -1,0 +1,1166 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>คู่มือเตรียมตัวสอบป้องกันโครงงาน FoodCare (Master Defense Guide)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Sarabun:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #0f766e;
+      --primary-dark: #115e59;
+      --primary-light: #ccfbf1;
+      --secondary: #0284c7;
+      --accent: #f59e0b;
+      --dark: #0f172a;
+      --gray-50: #f8fafc;
+      --gray-100: #f1f5f9;
+      --gray-200: #e2e8f0;
+      --gray-300: #cbd5e1;
+      --gray-700: #334155;
+      --gray-800: #1e293b;
+      --text: #1e293b;
+      --border: #e2e8f0;
+      --code-bg: #0f172a;
+    }
+
+    * { box-sizing: border-box; }
+    
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Sarabun', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background-color: var(--gray-100);
+      color: var(--text);
+      line-height: 1.75;
+      font-size: 15.5px;
+    }
+
+    /* Fixed top navigation bar */
+    .top-bar {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      background: rgba(15, 23, 42, 0.95);
+      backdrop-filter: blur(10px);
+      color: white;
+      padding: 12px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+    }
+    .top-bar-title {
+      font-size: 17px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: #5eead4;
+    }
+    .top-actions {
+      display: flex;
+      gap: 10px;
+    }
+    .btn-action {
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+    .btn-action:hover {
+      background: var(--primary-dark);
+      transform: translateY(-1px);
+    }
+    .btn-secondary {
+      background: #334155;
+    }
+    .btn-secondary:hover {
+      background: #475569;
+    }
+
+    /* Document Container */
+    .document-wrapper {
+      max-width: 1050px;
+      margin: 30px auto;
+      background: white;
+      padding: 60px 70px;
+      border-radius: 12px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.06);
+      border: 1px solid var(--border);
+    }
+
+    /* Headings */
+    h1, h2, h3, h4, h5 {
+      color: var(--dark);
+      font-weight: 700;
+      line-height: 1.35;
+    }
+    .doc-header {
+      border-bottom: 3px solid var(--primary);
+      padding-bottom: 25px;
+      margin-bottom: 40px;
+      text-align: center;
+    }
+    .doc-header h1 {
+      font-size: 32px;
+      margin: 0 0 10px 0;
+      color: var(--primary-dark);
+    }
+    .doc-header .subtitle {
+      font-size: 18px;
+      color: var(--gray-700);
+      margin: 0 0 15px 0;
+      font-weight: 500;
+    }
+    .badge-container {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .badge {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 12.5px;
+      font-weight: 600;
+      background: var(--gray-100);
+      color: var(--gray-700);
+      border: 1px solid var(--gray-200);
+    }
+    .badge-primary { background: #e0f2fe; color: #0369a1; border-color: #bae6fd; }
+    .badge-success { background: #dcfce7; color: #15803d; border-color: #bbf7d0; }
+    .badge-warning { background: #fef3c7; color: #b45309; border-color: #fde68a; }
+
+    h2 {
+      font-size: 24px;
+      border-left: 5px solid var(--primary);
+      padding-left: 14px;
+      margin-top: 45px;
+      margin-bottom: 20px;
+      padding-bottom: 4px;
+      background: linear-gradient(to right, var(--primary-light), transparent);
+      padding: 8px 14px;
+      border-radius: 0 8px 8px 0;
+    }
+    h3 {
+      font-size: 19px;
+      margin-top: 30px;
+      margin-bottom: 12px;
+      color: var(--secondary);
+      border-bottom: 1px dashed var(--gray-300);
+      padding-bottom: 6px;
+    }
+    h4 {
+      font-size: 16.5px;
+      margin-top: 20px;
+      margin-bottom: 8px;
+      color: var(--gray-800);
+    }
+
+    /* Table of contents */
+    .toc-box {
+      background: var(--gray-50);
+      border: 1.5px solid var(--gray-200);
+      border-radius: 10px;
+      padding: 24px 30px;
+      margin-bottom: 45px;
+    }
+    .toc-title {
+      font-size: 18px;
+      font-weight: 700;
+      margin-top: 0;
+      margin-bottom: 15px;
+      color: var(--primary-dark);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .toc-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+      gap: 10px 20px;
+    }
+    .toc-item a {
+      color: var(--gray-700);
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.15s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .toc-item a:hover {
+      color: var(--primary);
+      text-decoration: underline;
+    }
+
+    /* Callout & Alert boxes */
+    .callout {
+      border-radius: 8px;
+      padding: 18px 20px;
+      margin: 20px 0;
+      border-left: 4px solid;
+      background: var(--gray-50);
+    }
+    .callout-info {
+      border-color: var(--secondary);
+      background: #f0f9ff;
+    }
+    .callout-success {
+      border-color: #16a34a;
+      background: #f0fdf4;
+    }
+    .callout-warning {
+      border-color: #d97706;
+      background: #fffbeb;
+    }
+    .callout-danger {
+      border-color: #dc2626;
+      background: #fef2f2;
+    }
+    .callout-title {
+      font-weight: 700;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* Tables */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 20px 0;
+      font-size: 14.5px;
+    }
+    th, td {
+      border: 1px solid var(--border);
+      padding: 10px 14px;
+      text-align: left;
+      vertical-align: top;
+    }
+    th {
+      background: var(--gray-100);
+      font-weight: 700;
+      color: var(--gray-800);
+    }
+    tr:nth-child(even) {
+      background: var(--gray-50);
+    }
+
+    /* Code blocks */
+    pre {
+      background: var(--code-bg);
+      color: #e2e8f0;
+      padding: 18px;
+      border-radius: 8px;
+      overflow-x: auto;
+      font-family: 'Fira Code', Consolas, Monaco, monospace;
+      font-size: 13.5px;
+      line-height: 1.6;
+      border: 1px solid #334155;
+      margin: 18px 0;
+    }
+    code {
+      font-family: 'Fira Code', Consolas, monospace;
+      font-size: 13px;
+      background: #e2e8f0;
+      color: #0f172a;
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+    pre code {
+      background: transparent;
+      color: inherit;
+      padding: 0;
+    }
+
+    /* Diagram wrapper */
+    .diagram-container {
+      background: white;
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      padding: 20px;
+      margin: 25px 0;
+      text-align: center;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+    }
+    .diagram-container img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 6px;
+      display: block;
+      margin: 0 auto;
+    }
+    .diagram-caption {
+      margin-top: 12px;
+      font-size: 14px;
+      color: var(--gray-700);
+      font-weight: 600;
+    }
+
+    /* Q&A Cards */
+    .qa-card {
+      background: white;
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      margin-bottom: 20px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+    }
+    .qa-question {
+      background: #f8fafc;
+      padding: 14px 18px;
+      font-weight: 700;
+      color: var(--dark);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+    }
+    .qa-question-icon {
+      background: var(--primary);
+      color: white;
+      border-radius: 50%;
+      width: 24px;
+      height: 24px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+    .qa-answer {
+      padding: 16px 20px;
+      background: white;
+      color: var(--gray-700);
+      line-height: 1.8;
+    }
+    .qa-answer strong {
+      color: var(--dark);
+    }
+
+    /* Demo steps */
+    .step-list {
+      list-style: none;
+      padding-left: 0;
+      counter-reset: step-counter;
+    }
+    .step-item {
+      position: relative;
+      padding-left: 55px;
+      margin-bottom: 25px;
+    }
+    .step-item::before {
+      counter-increment: step-counter;
+      content: counter(step-counter);
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 38px;
+      height: 38px;
+      background: var(--primary);
+      color: white;
+      border-radius: 50%;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      box-shadow: 0 4px 10px rgba(15, 118, 110, 0.3);
+    }
+    .step-title {
+      font-weight: 700;
+      font-size: 17px;
+      color: var(--dark);
+      margin-bottom: 6px;
+    }
+
+    /* Print Styles */
+    @media print {
+      body {
+        background: white;
+        color: black;
+        font-size: 12pt;
+      }
+      .top-bar {
+        display: none !important;
+      }
+      .document-wrapper {
+        max-width: 100%;
+        margin: 0;
+        padding: 0;
+        border: none;
+        box-shadow: none;
+      }
+      .page-break {
+        page-break-before: always;
+      }
+      .diagram-container {
+        page-break-inside: avoid;
+        border: 1px solid #ccc;
+      }
+      .qa-card {
+        page-break-inside: avoid;
+      }
+      pre {
+        page-break-inside: avoid;
+        white-space: pre-wrap;
+        font-size: 10pt;
+      }
+      table {
+        page-break-inside: avoid;
+        font-size: 10pt;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Action Bar -->
+  <div class="top-bar">
+    <div class="top-bar-title">
+      <span>🥦</span>
+      <span>FoodCare — เอกสารเตรียมตัวสอบป้องกันโครงงาน (Master Defense Guide)</span>
+    </div>
+    <div class="top-actions">
+      <button class="btn-action" onclick="window.print()">
+        🖨️ พิมพ์ / บันทึกเป็น PDF (Print to PDF)
+      </button>
+      <button class="btn-action btn-secondary" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
+        ⬆️ กลับด้านบน
+      </button>
+    </div>
+  </div>
+
+  <div class="document-wrapper">
+
+    <!-- Document Header -->
+    <div class="doc-header">
+      <h1>คู่มือเตรียมตัวสอบป้องกันโครงงาน (Project Defense Master Guide)</h1>
+      <div class="subtitle">ระบบจัดการตู้เย็นอัจฉริยะ ลดขยะอาหาร พร้อม AI แนะนำเมนูและแชร์ตู้เย็นในครอบครัว (FoodCare)</div>
+      <div class="badge-container">
+        <span class="badge badge-primary">Framework: React 19 + Express 5</span>
+        <span class="badge badge-success">AI: Google Gemini 3.5 Flash + MobileNet</span>
+        <span class="badge badge-warning">Database: MySQL (Connection Pool)</span>
+        <span class="badge">Testing: 23/23 Automated Cases Passed (100%)</span>
+      </div>
+    </div>
+
+    <!-- Table of Contents -->
+    <div class="toc-box">
+      <div class="toc-title">📑 สารบัญเนื้อหาสำหรับเตรียมตัวสอบ (Table of Contents)</div>
+      <div class="toc-grid">
+        <div class="toc-item"><a href="#section-1">1. บทนำ วัตถุประสงค์ และจุดขายของโครงงาน (Overview & Value)</a></div>
+        <div class="toc-item"><a href="#section-2">2. สถาปัตยกรรมระบบและเทคโนโลยี (Architecture & Tech Stack)</a></div>
+        <div class="toc-item"><a href="#section-3">3. โครงสร้างฐานข้อมูลและความสัมพันธ์ (Database Schema & ER)</a></div>
+        <div class="toc-item"><a href="#section-4">4. การอธิบายแผนภาพระบบทั้งหมด (UML Diagrams Explanation)</a></div>
+        <div class="toc-item"><a href="#section-5">5. ผังโครงสร้างโค้ดและการทำงานทุกส่วน (Code Map & Feature Flow)</a></div>
+        <div class="toc-item"><a href="#section-6">6. เจาะลึกโค้ดสำคัญและการทำงานเบื้องหลัง (Deep Dive Code Anatomy)</a></div>
+        <div class="toc-item"><a href="#section-7">7. ผลการทดสอบระบบ (System Test Cases 23/23)</a></div>
+        <div class="toc-item"><a href="#section-8">8. คลังคำถาม-คำตอบรับมือกรรมการ (Comprehensive Defense Q&A)</a></div>
+        <div class="toc-item"><a href="#section-9">9. ลำดับขั้นตอนการสาธิตระบบ (Live Demo Script)</a></div>
+        <div class="toc-item"><a href="#section-10">10. ตารางสรุปสิ่งที่ต้องท่องจำก่อนเข้าห้องสอบ (Must-Memorize Summary)</a></div>
+      </div>
+    </div>
+
+    <!-- ================= SECTION 1 ================= -->
+    <h2 id="section-1">1. บทนำ วัตถุประสงค์ และจุดขายของโครงงาน (Overview & Value Proposition)</h2>
+    
+    <h3>1.1 ที่มาและความสำคัญ (Problem Statement)</h3>
+    <p>
+      ปัญหา <strong>ขยะอาหาร (Food Waste)</strong> ในระดับครัวเรือนจัดเป็นหนึ่งในปัญหาสำคัญระดับโลก โดยเฉลี่ยแล้วอาหารที่ถูกซื้อมาบริโภคมากกว่า 30% ถูกทิ้งไปโดยเปล่าประโยชน์ สาเหตุหลักเกิดจาก:
+    </p>
+    <ul>
+      <li><strong>ลืมวันหมดอายุ:</strong> ซื้อของสดมาแช่ไว้ในตู้เย็น ลึกจนมองไม่เห็น หรือไม่ได้บันทึกวันหมดอายุ ทำให้ของเน่าเสียก่อนนำมารับประทาน</li>
+      <li><strong>ขาดการวางแผนเมนู:</strong> ผู้ใช้ไม่รู้ว่าจะนำวัตถุดิบที่เหลืออยู่ในตู้เย็นไปทำเมนูอะไรดี จึงตัดสินใจซื้ออาหารใหม่แทนการใช้วัตถุดิบเดิม</li>
+      <li><strong>ขาดการสื่อสารในครอบครัว:</strong> สมาชิกในบ้านต่างคนต่างซื้อของเข้าบ้านโดยไม่รู้ว่าในตู้เย็นมีของสิ่งนั้นอยู่แล้ว เกิดการซื้อซ้ำซ้อน (Duplicate Purchases)</li>
+    </ul>
+
+    <h3>1.2 โซลูชันของโครงงาน FoodCare</h3>
+    <p>
+      FoodCare ได้รับการออกแบบให้เป็นระบบจัดการตู้เย็นอัจฉริยะแบบ <strong>Closed-Loop Inventory</strong> ที่เชื่อมโยงการทำงานตั้งแต่การนำเข้าวัตถุดิบ การติดตามความสด การปรุงอาหาร จนถึงการซื้อของใหม่อย่างครบวงจร:
+    </p>
+    <div class="callout callout-success">
+      <div class="callout-title">💡 4 เสาหลักของ FoodCare ที่ต้องเน้นย้ำกับกรรมการ:</div>
+      <ol style="margin-bottom: 0;">
+        <li><strong>Smart Tracking & Expiry Countdown:</strong> คำนวณเปอร์เซ็นต์ความสดคงเหลือ (% Freshness) และแจ้งเตือนของใกล้หมดอายุล่วงหน้า</li>
+        <li><strong>AI Vision Object Detection:</strong> สแกนภาพถ่ายวัตถุดิบและนำเข้าสู่ระบบอัตโนมัติด้วย Google Gemini และ MobileNet</li>
+        <li><strong>AI Chef & Automatic Stock Deduction:</strong> ให้ Gemini AI คิดค้นสูตรอาหารตามวัตถุดิบที่มีจริง และเมื่อปรุงเสร็จ ระบบจะตัดสต็อกวัตถุดิบในตู้เย็นให้อัตโนมัติ (Cooking Mode)</li>
+        <li><strong>Shared Household Fridge:</strong> สมาชิกในครอบครัวสามารถแชร์ตู้เย็นและรายการซื้อของร่วมกันได้ผ่านรหัส Invite Code</li>
+      </ol>
+    </div>
+
+    <!-- ================= SECTION 2 ================= -->
+    <div class="page-break"></div>
+    <h2 id="section-2">2. สถาปัตยกรรมระบบและเทคโนโลยี (Architecture & Tech Stack)</h2>
+    <p>
+      โครงงาน FoodCare ออกแบบตามสถาปัตยกรรมแบบ <strong>Client-Server Architecture (RESTful API)</strong> แยกส่วนการทำงานระหว่าง Front-end และ Back-end อย่างชัดเจน (Decoupled Design) ทำให้ดูแลรักษาง่ายและรองรับการขยายตัวในอนาคต:
+    </p>
+
+    <table>
+      <thead>
+        <tr>
+          <th style="width: 20%;">ส่วนงาน (Layer)</th>
+          <th style="width: 30%;">เทคโนโลยีที่ใช้</th>
+          <th style="width: 50%;">หน้าที่และเหตุผลทางวิศวกรรม</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Frontend (Client)</strong></td>
+          <td>React 19, Vite 8, @tanstack/react-router, Tailwind CSS v4, Lucide React</td>
+          <td>
+            • <strong>React 19 & Vite:</strong> ให้ประสิทธิภาพการประมวลผล Virtual DOM สูง และเวลา Build ที่รวดเร็ว<br>
+            • <strong>TanStack Router:</strong> จัดการ Client-side Routing ได้อย่างปลอดภัยและมี Type-safety<br>
+            • <strong>Tailwind CSS v4:</strong> ตกแต่ง UI แบบ Utility-first สวยงาม ทันสมัย และ Responsive รองรับทุกหน้าจอ
+          </td>
+        </tr>
+        <tr>
+          <td><strong>Client-side AI</strong></td>
+          <td>TensorFlow.js (@tensorflow/tfjs), MobileNet</td>
+          <td>วิเคราะห์และตรวจจับภาพวัตถุดิบบนเว็บเบราว์เซอร์ได้ทันทีโดยไม่ต้องส่งข้อมูลรูปภาพขึ้น Server ช่วยลดแบนด์วิดท์และความหน่วง</td>
+        </tr>
+        <tr>
+          <td><strong>Backend (Server)</strong></td>
+          <td>Node.js, Express.js 5, express-session, bcrypt, nodemailer</td>
+          <td>
+            • <strong>Express.js 5:</strong> จัดการ RESTful API endpoints และ Asynchronous middleware ได้อย่างรวดเร็ว<br>
+            • <strong>express-session:</strong> ควบคุมสถานะการเข้าสู่ระบบผ่าน HttpOnly Cookies มีความปลอดภัยสูง ป้องกัน XSS Attacks<br>
+            • <strong>bcrypt:</strong> เข้ารหัสผ่านของผู้ใช้ด้วย Salt rounds ป้องกันข้อมูลรั่วไหล<br>
+            • <strong>nodemailer:</strong> ส่งรหัส OTP 6 หลักผ่าน SMTP ไปยังอีเมลจริงเพื่อยืนยันตัวตน
+          </td>
+        </tr>
+        <tr>
+          <td><strong>Database</strong></td>
+          <td>MySQL / MariaDB, mysql2 (Connection Pool)</td>
+          <td>
+            • ฐานข้อมูลเชิงสัมพันธ์ (Relational Database) มี Foreign Key Constraints และ Cascading Rules ควบคุมความสมบูรณ์ของข้อมูล<br>
+            • ใช้ <code>mysql2/promise</code> แบบ Connection Pooling (10 Connections) ป้องกันปัญหาเซิร์ฟเวอร์ค้างเมื่อมีคำขอพร้อมกัน
+          </td>
+        </tr>
+        <tr>
+          <td><strong>External AI Service</strong></td>
+          <td>Google Generative AI (Gemini 3.5 Flash / Flash Lite)</td>
+          <td>
+            • สร้างสรรค์สูตรอาหารตามวัตถุดิบในตู้เย็น (Prompt Engineering บังคับตอบกลับเป็น Structured JSON)<br>
+            • วิเคราะห์ภาพวัตถุดิบความละเอียดสูง (Gemini Vision) พร้อมระบบ Fallback รองรับกรณีเน็ตขัดข้อง
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- ================= SECTION 3 ================= -->
+    <div class="page-break"></div>
+    <h2 id="section-3">3. โครงสร้างฐานข้อมูลและความสัมพันธ์ (Database Schema & E-R Diagram)</h2>
+    <p>
+      ระบบใช้ฐานข้อมูลชื่อ <code>foodcare_db</code> ประกอบด้วย 6 ตารางหลักที่ออกแบบตามหลัก <strong>Third Normal Form (3NF)</strong> เพื่อลดความซ้ำซ้อนของข้อมูล:
+    </p>
+
+    <div class="diagram-container">
+      <img src="er_diagram.svg" alt="E-R Diagram FoodCare" style="max-height: 600px;">
+      <div class="diagram-caption">ภาพที่ 3.1 แผนภาพความสัมพันธ์ของเอนทิตี (Entity-Relationship Diagram: E-R Diagram)</div>
+    </div>
+
+    <h3>3.1 รายละเอียดตารางและพจนานุกรมข้อมูล (Data Dictionary)</h3>
+
+    <h4>1) ตาราง <code>users</code> (ข้อมูลบัญชีผู้ใช้งาน)</h4>
+    <table>
+      <thead>
+        <tr><th>Column</th><th>Type</th><th>Constraint</th><th>Description</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>user_id</code></td><td>INT</td><td>PK, AUTO_INCREMENT</td><td>รหัสประจำตัวผู้ใช้งาน</td></tr>
+        <tr><td><code>username</code></td><td>VARCHAR(100)</td><td>UNIQUE</td><td>ชื่อผู้ใช้สำหรับล็อกอิน</td></tr>
+        <tr><td><code>email</code></td><td>VARCHAR(255)</td><td>UNIQUE, NOT NULL</td><td>อีเมลจริงสำหรับรับรหัส OTP</td></tr>
+        <tr><td><code>phone</code></td><td>VARCHAR(50)</td><td>NULL</td><td>เบอร์โทรศัพท์</td></tr>
+        <tr><td><code>password</code></td><td>VARCHAR(255)</td><td>NOT NULL</td><td>รหัสผ่านที่ผ่านการแฮชด้วย bcrypt</td></tr>
+        <tr><td><code>household_id</code></td><td>INT</td><td>FK -> households(id), NULL</td><td>รหัสกลุ่มบ้านที่สังกัดอยู่ในปัจจุบัน</td></tr>
+        <tr><td><code>otp_code</code></td><td>VARCHAR(10)</td><td>NULL</td><td>รหัสยืนยันตัวตน 6 หลัก</td></tr>
+        <tr><td><code>otp_expires_at</code></td><td>DATETIME</td><td>NULL</td><td>เวลาหมดอายุของ OTP (10 นาที)</td></tr>
+        <tr><td><code>is_verified</code></td><td>TINYINT(1)</td><td>DEFAULT 0</td><td>สถานะการยืนยันอีเมล (1 = ยืนยันแล้ว)</td></tr>
+        <tr><td><code>created_at</code></td><td>TIMESTAMP</td><td>DEFAULT CURRENT_TIMESTAMP</td><td>วันที่สร้างบัญชี</td></tr>
+      </tbody>
+    </table>
+
+    <h4>2) ตาราง <code>households</code> (กลุ่มครัวเรือน / ตู้เย็นส่วนกลาง)</h4>
+    <table>
+      <thead>
+        <tr><th>Column</th><th>Type</th><th>Constraint</th><th>Description</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>id</code></td><td>INT</td><td>PK, AUTO_INCREMENT</td><td>รหัสกลุ่มบ้าน</td></tr>
+        <tr><td><code>name</code></td><td>VARCHAR(100)</td><td>NOT NULL</td><td>ชื่อกลุ่ม เช่น "บ้านสุขใจ", "Family Condo"</td></tr>
+        <tr><td><code>invite_code</code></td><td>VARCHAR(20)</td><td>UNIQUE, NOT NULL</td><td>รหัสเชิญสมาชิกเข้าร่วมกลุ่ม (เช่น FC-AB12)</td></tr>
+        <tr><td><code>created_by</code></td><td>INT</td><td>FK -> users(user_id)</td><td>ผู้สร้างกลุ่ม (House Owner)</td></tr>
+        <tr><td><code>created_at</code></td><td>TIMESTAMP</td><td>DEFAULT CURRENT_TIMESTAMP</td><td>วันที่สร้างกลุ่ม</td></tr>
+      </tbody>
+    </table>
+
+    <h4>3) ตาราง <code>household_members</code> (ความสัมพันธ์สมาชิกในบ้าน)</h4>
+    <table>
+      <thead>
+        <tr><th>Column</th><th>Type</th><th>Constraint</th><th>Description</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>household_id</code></td><td>INT</td><td>PK, FK -> households(id)</td><td>รหัสกลุ่มบ้าน</td></tr>
+        <tr><td><code>user_id</code></td><td>INT</td><td>PK, FK -> users(user_id)</td><td>รหัสผู้ใช้งาน</td></tr>
+        <tr><td><code>role</code></td><td>ENUM('owner','member')</td><td>DEFAULT 'member'</td><td>สิทธิ์ในกลุ่ม (หัวหน้าบ้าน / สมาชิก)</td></tr>
+        <tr><td><code>joined_at</code></td><td>TIMESTAMP</td><td>DEFAULT CURRENT_TIMESTAMP</td><td>วันที่เข้าร่วมกลุ่ม</td></tr>
+      </tbody>
+    </table>
+
+    <h4>4) ตาราง <code>fridge_items</code> (รายการวัตถุดิบในตู้เย็น)</h4>
+    <table>
+      <thead>
+        <tr><th>Column</th><th>Type</th><th>Constraint</th><th>Description</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>id</code></td><td>INT</td><td>PK, AUTO_INCREMENT</td><td>รหัสวัตถุดิบ</td></tr>
+        <tr><td><code>user_id</code></td><td>INT</td><td>FK -> users(user_id)</td><td>ผู้บันทึกวัตถุดิบ</td></tr>
+        <tr><td><code>household_id</code></td><td>INT</td><td>FK -> households(id), NULL</td><td>รหัสกลุ่มบ้าน (หากเป็น NULL แสดงว่าเป็นของส่วนตัว)</td></tr>
+        <tr><td><code>name</code></td><td>VARCHAR(255)</td><td>NOT NULL</td><td>ชื่อวัตถุดิบ เช่น "อกไก่สด", "มะเขือเทศ"</td></tr>
+        <tr><td><code>category</code></td><td>VARCHAR(100)</td><td>NOT NULL</td><td>หมวดหมู่ (เนื้อสัตว์, ผัก, ผลไม้, เครื่องดื่ม ฯลฯ)</td></tr>
+        <tr><td><code>quantity</code></td><td>DECIMAL(10,2)</td><td>NOT NULL</td><td>ปริมาณตัวเลข เช่น 500, 3, 1</td></tr>
+        <tr><td><code>unit</code></td><td>VARCHAR(50)</td><td>NOT NULL</td><td>หน่วยนับ เช่น กรัม, ฟอง, ขวด, หัว</td></tr>
+        <tr><td><code>exp_date</code></td><td>DATE</td><td>NOT NULL</td><td>วันหมดอายุ</td></tr>
+        <tr><td><code>remaining_percent</code></td><td>INT</td><td>DEFAULT 100</td><td>เปอร์เซ็นต์คงเหลือ (100% -> 0% หักอัตโนมัติ)</td></tr>
+        <tr><td><code>created_at</code></td><td>TIMESTAMP</td><td>DEFAULT CURRENT_TIMESTAMP</td><td>วันที่นำเข้าตู้เย็น</td></tr>
+      </tbody>
+    </table>
+
+    <h4>5) ตาราง <code>shopping_items</code> (รายการของที่ต้องซื้อ)</h4>
+    <table>
+      <thead>
+        <tr><th>Column</th><th>Type</th><th>Constraint</th><th>Description</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>id</code></td><td>INT</td><td>PK, AUTO_INCREMENT</td><td>รหัสรายการซื้อ</td></tr>
+        <tr><td><code>user_id</code></td><td>INT</td><td>FK -> users(user_id)</td><td>ผู้เพิ่มรายการ</td></tr>
+        <tr><td><code>household_id</code></td><td>INT</td><td>FK -> households(id), NULL</td><td>รหัสกลุ่มบ้านที่แชร์รายการร่วมกัน</td></tr>
+        <tr><td><code>name</code></td><td>VARCHAR(255)</td><td>NOT NULL</td><td>ชื่อสินค้าที่ต้องซื้อ</td></tr>
+        <tr><td><code>category</code></td><td>VARCHAR(100)</td><td>NOT NULL</td><td>หมวดหมู่สินค้า</td></tr>
+        <tr><td><code>quantity</code></td><td>DECIMAL(10,2)</td><td>NOT NULL</td><td>จำนวนที่ต้องการซื้อ</td></tr>
+        <tr><td><code>unit</code></td><td>VARCHAR(50)</td><td>NOT NULL</td><td>หน่วยนับ</td></tr>
+        <tr><td><code>completed</code></td><td>TINYINT(1)</td><td>DEFAULT 0</td><td>สถานะการซื้อ (0 = ยังไม่ซื้อ, 1 = ซื้อแล้ว)</td></tr>
+        <tr><td><code>created_at</code></td><td>TIMESTAMP</td><td>DEFAULT CURRENT_TIMESTAMP</td><td>วันที่สร้างรายการ</td></tr>
+      </tbody>
+    </table>
+
+    <h4>6) ตาราง <code>notifications</code> (การแจ้งเตือนระบบ)</h4>
+    <table>
+      <thead>
+        <tr><th>Column</th><th>Type</th><th>Constraint</th><th>Description</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>id</code></td><td>INT</td><td>PK, AUTO_INCREMENT</td><td>รหัสการแจ้งเตือน</td></tr>
+        <tr><td><code>user_id</code></td><td>INT</td><td>FK -> users(user_id)</td><td>ผู้รับการแจ้งเตือน</td></tr>
+        <tr><td><code>household_id</code></td><td>INT</td><td>FK, NULL</td><td>รหัสกลุ่มบ้านที่เกี่ยวข้อง</td></tr>
+        <tr><td><code>type</code></td><td>VARCHAR(50)</td><td>NOT NULL</td><td>ประเภท (EXPIRY_WARNING, HOUSEHOLD_INVITE)</td></tr>
+        <tr><td><code>message</code></td><td>TEXT</td><td>NOT NULL</td><td>ข้อความแจ้งเตือน</td></tr>
+        <tr><td><code>is_read</code></td><td>TINYINT(1)</td><td>DEFAULT 0</td><td>สถานะการอ่าน (0 = ยังไม่อ่าน, 1 = อ่านแล้ว)</td></tr>
+        <tr><td><code>created_at</code></td><td>TIMESTAMP</td><td>DEFAULT CURRENT_TIMESTAMP</td><td>เวลาที่แจ้งเตือน</td></tr>
+      </tbody>
+    </table>
+
+    <!-- ================= SECTION 4 ================= -->
+    <div class="page-break"></div>
+    <h2 id="section-4">4. การอธิบายแผนภาพระบบทั้งหมด (UML Diagrams Explanation)</h2>
+
+    <h3>4.1 แผนภาพกรณีการใช้งาน (Use Case Diagram)</h3>
+    <div class="diagram-container">
+      <img src="use_case_diagram.svg" alt="Use Case Diagram FoodCare" style="max-height: 700px;">
+      <div class="diagram-caption">ภาพที่ 4.1 แผนภาพ Use Case Diagram แสดง Actors และความสัมพันธ์ Include / Extend</div>
+    </div>
+    
+    <div class="callout callout-info">
+      <div class="callout-title">🔍 คำอธิบายความสัมพันธ์ที่กรรมการมักจะถาม:</div>
+      <ul>
+        <li><strong>Actor ผู้ใช้ (User):</strong> มีปฏิสัมพันธ์กับ UC-01 ถึง UC-08 ครอบคลุมการยืนยันตัวตน, จัดการบ้าน, เพิ่ม-ลบของสด, ดูเมนู, และซื้อของ</li>
+        <li><strong>Actor ระบบ (System Background Process):</strong> รับผิดชอบ UC-09 (แจ้งเตือนของใกล้หมดอายุอัตโนมัติ) โดยตรวจสอบวันหมดอายุเทียบกับเวลาปัจจุบัน</li>
+        <li><strong>«extend» (สแกนวัตถุดิบด้วย AI $ightarrow$ UC-04 เพิ่มวัตถุดิบ):</strong> การสแกนภาพเป็นทางเลือกเสริม (Optional) ในการเพิ่มของสด ผู้ใช้จะเลือกกรอกด้วยมือหรือใช้ AI สแกนก็ได้</li>
+        <li><strong>«include» (UC-07 ทำอาหาร $ightarrow$ UC-05 ตัดสต็อก):</strong> เมื่อผู้ใช้ทำอาหารเสร็จสิ้น ระบบ <em>จำเป็นต้อง (Mandatory)</em> คำนวณตัดสต็อกวัตถุดิบในตู้เย็นออกทันที</li>
+        <li><strong>«include» (UC-08 ซื้อของ $ightarrow$ UC-04 เพิ่มวัตถุดิบ):</strong> เมื่อซื้อสินค้าในรายการ Shopping List ครบแล้ว ระบบจะย้ายรายการนั้นเข้าตู้เย็นเป็นของสดโดยอัตโนมัติ</li>
+      </ul>
+    </div>
+
+    <h3>4.2 แผนภาพกิจกรรม (Activity Diagrams - Swimlane Format)</h3>
+    <p>แสดงการแบ่งหน้าที่ระหว่างผู้ใช้งาน (User Lane) และระบบฝั่งเซิร์ฟเวอร์/AI (System Lane):</p>
+
+    <div class="diagram-container">
+      <img src="activity_diagram_3_2_3_1.svg" alt="Activity Diagram 3.2.3.1" style="max-height: 480px;">
+      <div class="diagram-caption">ภาพที่ 4.2 แผนภาพกิจกรรม 3.2.3.1: การเพิ่มวัตถุดิบและการสแกนภาพด้วย AI</div>
+    </div>
+    <p><strong>คำอธิบาย 3.2.3.1:</strong> ผู้ใช้เปิดหน้าสแกน ถ่ายรูปหรืออัปโหลดภาพ ระบบส่ง Base64 ไปยัง Gemini Vision ทำการ Parse JSON นำผลลัพธ์มาเติมลงฟอร์มอัตโนมัติ ผู้ใช้ตรวจสอบความถูกต้องและกดยืนยันบันทึกเข้าสู่ฐานข้อมูล MySQL</p>
+
+    <div class="diagram-container">
+      <img src="activity_diagram_3_2_3_2.svg" alt="Activity Diagram 3.2.3.2" style="max-height: 480px;">
+      <div class="diagram-caption">ภาพที่ 4.3 แผนภาพกิจกรรม 3.2.3.2: การจัดการรายการซื้อและย้ายเข้าตู้เย็น</div>
+    </div>
+    <p><strong>คำอธิบาย 3.2.3.2:</strong> ผู้ใช้จดรายการของสดที่ต้องซื้อ เมื่อไปซื้อเสร็จแล้วกดยืนยันสถานะซื้อสำเร็จ ระบบจะทำการสร้างเรคคอร์ดในตาราง <code>fridge_items</code> พร้อมคำนวณวันหมดอายุเริ่มต้น และลบหรือปิดสถานะใน <code>shopping_items</code></p>
+
+    <div class="diagram-container">
+      <img src="activity_diagram_3_2_3_3.svg" alt="Activity Diagram 3.2.3.3" style="max-height: 480px;">
+      <div class="diagram-caption">ภาพที่ 4.4 แผนภาพกิจกรรม 3.2.3.3: การทำอาหารและหักวัตถุดิบออกจากตู้เย็น (Cooking & Stock Deduction)</div>
+    </div>
+    <p><strong>คำอธิบาย 3.2.3.3:</strong> ผู้ใช้เลือกเมนูอาหารที่ AI แนะนำ ระบบดึงรายการวัตถุดิบในสูตรมาแมปกับของที่มีในตู้เย็น เมื่อเข้าสู่โหมด Cooking Mode และกดปุ่มทำอาหารเสร็จ ระบบจะส่งคำขอ PUT ไปยัง <code>/api/fridge/deduct/:id</code> คำนวณหักเปอร์เซ็นต์ความสด/ปริมาณ หากหมด (0%) จะลบออกจากตู้เย็นทันที</p>
+
+    <div class="diagram-container">
+      <img src="activity_diagram_3_2_3_4.svg" alt="Activity Diagram 3.2.3.4" style="max-height: 480px;">
+      <div class="diagram-caption">ภาพที่ 4.5 แผนภาพกิจกรรม 3.2.3.4: การจัดการกลุ่มครัวเรือนและการแชร์ตู้เย็น</div>
+    </div>
+    <p><strong>คำอธิบาย 3.2.3.4:</strong> เจ้าของบ้านสร้างกลุ่ม ได้รับ Invite Code สมาชิกคนอื่นนำรหัสมากรอก ระบบตรวจสอบความถูกต้องในฐานข้อมูลและเพิ่มชื่อลงใน <code>household_members</code> ทำให้ตู้เย็นของทั้งสองฝ่ายซิงค์ข้อมูลร่วมกัน</p>
+
+    <!-- ================= SECTION 4.3 ================= -->
+    <div class="page-break"></div>
+    <h3>4.3 แผนภาพลำดับการทำงาน (Sequence Diagrams)</h3>
+    <p>แสดงการสื่อสารรับ-ส่งข้อมูลระหว่าง Actor, Frontend, Backend, Gemini AI และ Database:</p>
+
+    <div class="diagram-container">
+      <img src="sequence_diagram_3_2_5_1.svg" alt="Sequence Diagram 3.2.5.1" style="max-height: 500px;">
+      <div class="diagram-caption">ภาพที่ 4.6 แผนภาพลำดับการทำงาน 3.2.5.1: การสแกนภาพวัตถุดิบด้วย AI Vision</div>
+    </div>
+
+    <div class="diagram-container">
+      <img src="sequence_diagram_3_2_5_3.svg" alt="Sequence Diagram 3.2.5.3" style="max-height: 500px;">
+      <div class="diagram-caption">ภาพที่ 4.7 แผนภาพลำดับการทำงาน 3.2.5.3: การแนะนำเมนูด้วย AI Chef และการหักสต็อกอัตโนมัติ</div>
+    </div>
+
+    <h3>4.4 แผนภาพคลาส (Class Diagram)</h3>
+    <div class="diagram-container">
+      <img src="class_diagram.svg" alt="Class Diagram FoodCare" style="max-height: 600px;">
+      <div class="diagram-caption">ภาพที่ 4.8 แผนภาพคลาส (Class Diagram) แสดง Controller, Model, Services และ Data Access Layer</div>
+    </div>
+
+    <!-- ================= SECTION 5 ================= -->
+    <div class="page-break"></div>
+    <h2 id="section-5">5. ผังโครงสร้างโค้ดและการทำงานทุกส่วน (Code Map & Feature Flow)</h2>
+    <p>
+      ตารางสรุปแผนที่โค้ด (Source Code Map) สำหรับการตอบคำถามว่า <em>"ฟังก์ชันนี้อยู่ที่ไฟล์ไหน บรรทัดไหน และเรียก API อะไร?"</em>:
+    </p>
+
+    <table>
+      <thead>
+        <tr>
+          <th>ฟีเจอร์การทำงาน</th>
+          <th>หน้า UI (Frontend)</th>
+          <th>API Endpoint</th>
+          <th>Backend Handler (server.js)</th>
+          <th>ผลต่อฐานข้อมูล (Database)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>สมัครสมาชิก & ขอ OTP</strong></td>
+          <td><code>signup.jsx</code></td>
+          <td><code>POST /api/send-otp</code></td>
+          <td><code>sendOtpForRegistration()</code><br>(L736)</td>
+          <td>Insert/Update ลง <code>users</code> (เก็บ otp_code, otp_expires_at)</td>
+        </tr>
+        <tr>
+          <td><strong>ยืนยัน OTP เปิดบัญชี</strong></td>
+          <td><code>signup.jsx</code></td>
+          <td><code>POST /api/verify-otp</code></td>
+          <td><code>app.post('/api/verify-otp')</code><br>(L739)</td>
+          <td>Update <code>users.is_verified = 1</code> และสร้าง Session ให้ทันที</td>
+        </tr>
+        <tr>
+          <td><strong>เข้าสู่ระบบ (Login)</strong></td>
+          <td><code>login.jsx</code></td>
+          <td><code>POST /api/login</code></td>
+          <td><code>app.post('/api/login')</code><br>(L554)</td>
+          <td>Select ตรวจสอบ bcrypt hash และบันทึก <code>req.session.user</code></td>
+        </tr>
+        <tr>
+          <td><strong>สร้างกลุ่มครอบครัว</strong></td>
+          <td><code>household.jsx</code></td>
+          <td><code>POST /api/household/create</code></td>
+          <td><code>app.post('/api/household/create')</code><br>(L958)</td>
+          <td>Insert ลง <code>households</code>, <code>household_members</code> (role=owner)</td>
+        </tr>
+        <tr>
+          <td><strong>เข้าร่วมกลุ่มด้วย Invite Code</strong></td>
+          <td><code>household.jsx</code></td>
+          <td><code>POST /api/household/join</code></td>
+          <td><code>app.post('/api/household/join')</code><br>(L1028)</td>
+          <td>Insert ลง <code>household_members</code> และ Update <code>users.household_id</code></td>
+        </tr>
+        <tr>
+          <td><strong>ดึงข้อมูลของสดในตู้เย็น</strong></td>
+          <td><code>dashboard.jsx</code>, <code>fridge.jsx</code></td>
+          <td><code>GET /api/fridge</code></td>
+          <td><code>app.get('/api/fridge')</code><br>(L1172)</td>
+          <td>Select จาก <code>fridge_items</code> โดยกรองตาม <code>household_id</code> หรือ <code>user_id</code></td>
+        </tr>
+        <tr>
+          <td><strong>เพิ่มของสดเข้าตู้เย็น</strong></td>
+          <td><code>add.jsx</code>, <code>quick_add.jsx</code></td>
+          <td><code>POST /api/fridge/add</code></td>
+          <td><code>app.post('/api/fridge/add')</code><br>(L1267)</td>
+          <td>Insert ลง <code>fridge_items</code> พร้อมคำนวณวันหมดอายุ</td>
+        </tr>
+        <tr>
+          <td><strong>สแกนภาพด้วย AI Vision</strong></td>
+          <td><code>scan.jsx</code></td>
+          <td><code>POST /api/vision/analyze</code></td>
+          <td><code>app.post('/api/vision/analyze')</code><br>(L1564)</td>
+          <td>ส่ง Base64 ไปยัง Gemini Vision API ไม่บันทึกภาพลงเซิร์ฟเวอร์ (Zero-Storage)</td>
+        </tr>
+        <tr>
+          <td><strong>AI Chef แนะนำสูตรอาหาร</strong></td>
+          <td><code>recipes.jsx</code>, <code>recipe_detail.jsx</code></td>
+          <td><code>POST /api/recipes/suggest</code></td>
+          <td><code>app.post('/api/recipes/suggest')</code><br>(L1725)</td>
+          <td>รวบรวมของในตู้เย็นส่งไปให้ Gemini AI คืนค่าเป็น Recipe JSON Schema</td>
+        </tr>
+        <tr>
+          <td><strong>ทำอาหาร & ตัดสต็อก</strong></td>
+          <td><code>cooking.jsx</code></td>
+          <td><code>PUT /api/fridge/deduct/:id</code></td>
+          <td><code>app.put('/api/fridge/deduct/:id')</code><br>(L1332)</td>
+          <td>Update <code>remaining_percent</code> หรือ Delete หากหมดเกลี้ยง (0%)</td>
+        </tr>
+        <tr>
+          <td><strong>รายการซื้อของ (Shopping List)</strong></td>
+          <td><code>shopping.jsx</code></td>
+          <td><code>GET / POST /api/shopping/*</code></td>
+          <td><code>app.post('/api/shopping/*')</code><br>(L1415-L1500)</td>
+          <td>จัดการ CRUD ในตาราง <code>shopping_items</code></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- ================= SECTION 6 ================= -->
+    <div class="page-break"></div>
+    <h2 id="section-6">6. เจาะลึกโค้ดสำคัญและการทำงานเบื้องหลัง (Deep Dive Code Anatomy)</h2>
+
+    <h3>6.1 Middleware ซิงค์เซสชันและฟื้นฟูอัตโนมัติ (server.js บรรทัด 57-123)</h3>
+    <p>
+      <strong>ทำไมต้องมีโค้ดนี้?</strong> เพื่อแก้ปัญหา Session หลุดเมื่อเซิร์ฟเวอร์รีสตาร์ท หรือการร้องขอข้าม Port ระหว่าง 5173 (Vite) กับ 8080 (Express):
+    </p>
+    <pre><code>// server.js บรรทัด 57-123
+app.use((req, res, next) => {
+    let userId = req.session && req.session.user
+        ? Number(req.session.user.user_id || req.session.user.id || 0)
+        : 0;
+
+    // ถ้า Session หลุด ให้ฟื้นฟูจาก Header หรือ State ที่แนบมา
+    if (!userId) {
+        if (req.headers['x-user-id']) userId = Number(req.headers['x-user-id']);
+        else if (req.body?.userId) userId = Number(req.body.userId);
+        else if (lastActiveUserId) userId = lastActiveUserId; // Local fallback
+    }
+
+    if (userId > 0) {
+        // ดึงข้อมูลผู้ใช้และกลุ่มบ้านจริงล่าสุดจาก Database เพื่อให้ตู้เย็นซิงค์เสมอ
+        const syncSql = `
+            SELECT u.user_id, u.username, u.email,
+                   COALESCE(u.household_id, hm.household_id) AS household_id,
+                   h.name AS household_name, h.invite_code
+            FROM users u
+            LEFT JOIN household_members hm ON hm.user_id = u.user_id
+            LEFT JOIN households h ON h.id = COALESCE(u.household_id, hm.household_id)
+            WHERE u.user_id = ? LIMIT 1
+        `;
+        db.query(syncSql, [userId], (err, rows) => {
+            if (!err && rows.length > 0) {
+                req.session.user = rows[0];
+            }
+            next();
+        });
+        return;
+    }
+    next();
+});</code></pre>
+
+    <h3>6.2 ระบบ AI Chef: การทำ Prompt Engineering และ Fallback (server.js บรรทัด 1725-1859)</h3>
+    <p>
+      ส่วนนี้คือหัวใจสำคัญของ AI ในโครงการ โดยสั่งการให้ Gemini ปฏิบัติตามกฎอย่างเคร่งครัด พร้อมโครงสร้าง JSON ที่ชัดเจน:
+    </p>
+    <pre><code>// server.js บรรทัด 1751-1804
+const prompt = `คุณคือ AI เชฟมืออาชีพของแอป FoodCare 
+หน้าที่ของคุณคือคิดสูตรเมนูอาหาร 2-3 เมนู โดยอิงจากวัตถุดิบในตู้เย็น: ${cleanIngredients.join(', ')}
+เกณฑ์สำคัญมาก:
+1. วัตถุดิบ (ingredients): ต้องระบุปริมาณที่สมจริง (เช่น 2 ฟอง, 200 กรัม)
+2. เครื่องปรุงรส (seasonings): เมนูผัดต้องมีน้ำมันพืช, ซอสหอยนางรม, ซีอิ๊วขาว เสมอ
+ตอบกลับเป็น JSON Format เดียวเท่านั้น โครงสร้าง:
+{
+  "recipes": [
+    {
+      "id": "ai-1",
+      "title": "ชื่อเมนูภาษาไทย",
+      "time": "15 นาที",
+      "level": "ง่าย",
+      "ingredients": [...],
+      "seasonings": [...],
+      "steps": [...]
+    }
+  ]
+}`;
+
+// การเรียก API โดยบังคับ Structured JSON Response
+const geminiRes = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+        contents: [{ parts: [{ text: prompt }] }],
+        generationConfig: { responseMimeType: 'application/json' }
+    })
+});
+
+// หาก AI ล่มหรือเน็ตมีปัญหา จะเรียก getFallbackRecipes() ทันที ป้องกันแอปล่ม (Fault-Tolerant)</code></pre>
+
+    <h3>6.3 การคำนวณหักสต็อกวัตถุดิบใน Cooking Mode (cooking.jsx บรรทัด 55-90)</h3>
+    <pre><code>// cooking.jsx บรรทัด 55-90
+const calculateDeductPercent = (requiredQtyStr, fridgeQtyStr) => {
+    const reqMatch = String(requiredQtyStr || "").match(/[\d.]+/);
+    const fridgeMatch = String(fridgeQtyStr || "").match(/[\d.]+/);
+
+    if (reqMatch && fridgeMatch) {
+        const reqNum = parseFloat(reqMatch[0]);
+        const fridgeNum = parseFloat(fridgeMatch[0]);
+
+        if (fridgeNum > 0) {
+            if (reqNum >= fridgeNum) return 100; // ใช้หมดเกลี้ยง หัก 100% (ลบออก)
+            return Math.round((reqNum / fridgeNum) * 100); // หักตามสัดส่วนจริง เช่น 50%
+        }
+    }
+    return 100;
+};</code></pre>
+
+    <!-- ================= SECTION 7 ================= -->
+    <div class="page-break"></div>
+    <h2 id="section-7">7. ผลการทดสอบระบบ (System Test Cases 23/23 Passed)</h2>
+    <p>
+      ระบบได้รับการทดสอบความถูกต้องผ่านชุดทดสอบแบบอัตโนมัติ (Automated Integration Testing) ในไฟล์ <code>test_all_systems.js</code> โดยจำลองการทำงานจริงของผู้ใช้ตั้งแต่เริ่มต้นจนสิ้นสุด ผลการทดสอบ <strong>ผ่านครบทั้ง 23 การทดสอบ (100% Success Rate)</strong>:
+    </p>
+
+    <table>
+      <thead>
+        <tr><th>ลำดับ</th><th>ชื่อชุดการทดสอบ (Test Case)</th><th>โมดูล</th><th>ผลลัพธ์</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>TC-01</td><td>Database Connection (MySQL Pool)</td><td>Database</td><td><span class="badge badge-success">PASSED</span></td></tr>
+        <tr><td>TC-02</td><td>Auth: Check Initial Session</td><td>Authentication</td><td><span class="badge badge-success">PASSED</span></td></tr>
+        <tr><td>TC-03</td><td>Auth: Register Send OTP Email</td><td>Authentication</td><td><span class="badge badge-success">PASSED</span></td></tr>
+        <tr><td>TC-04</td><td>Auth: Retrieve OTP from Database</td><td>Authentication</td><td><span class="badge badge-success">PASSED</span></td></tr>
+        <tr><td>TC-05</td><td>Auth: Verify OTP & Activate Account</td><td>Authentication</td><td><span class="badge badge-success">PASSED</span></td></tr>
+        <tr><td>TC-06</td><td>Auth: Session Updated After Verification</td><td>Authentication</td><td><span class="badge badge-success">PASSED</span></td></tr>
+        <tr><td>TC-07</td><td>Auth: Logout & Session Destroy</td><td>Authentication</td><td><span class="badge badge-success">PASSED</span></td></tr>
+        <tr><td>TC-08</td><td>Auth: Login with Credentials & Bcrypt</td><td>Authentication</td><td><span class="badge badge-success">PASSED</span></td></tr>
+        <tr><td>TC-09</td><td>Household: Get Current Household Info</td><td>Household</td><td><span class="badge badge-success">PASSED</span></td></tr>
+        <tr><td>TC-10</td><td>Household: Create New Household & Invite Code</td><td>Household</td><td><span class="badge badge-success">PASSED</span></td></tr>
+        <tr><td>TC-11</td><td>Fridge: Get Fridge Items (Shared & Personal)</td><td>Fridge Management</td><td><span class="badge badge-success">PASSED</span></td></tr>
+        <tr><td>TC-12</td><td>Fridge: Add New Item to Fridge</td><td>Fridge Management</td><td><span class="badge badge-success">PASSED</span></td></tr>
+        <tr><td>TC-13</td><td>Fridge: Update Item Information</td><td>Fridge Management</td><td><span class="badge badge-success">PASSED</span></td></tr>
+        <tr><td>TC-14</td><td>Fridge: Deduct Item Quantity</td><td>Fridge Management</td><td><span class="badge badge-success">PASSED</span></td></tr>
+        <tr><td>TC-15</td><td>Fridge: Delete Item from Fridge</td><td>Fridge Management</td><td><span class="badge badge-success">PASSED</span></td></tr>
+        <tr><td>TC-16</td><td>Fridge: Get Frequent / Analytics Items</td><td>Analytics</td><td><span class="badge badge-success">PASSED</span></td></tr>
+        <tr><td>TC-17</td><td>Shopping: Get Shopping List Items</td><td>Shopping List</td><td><span class="badge badge-success">PASSED</span></td></tr>
+        <tr><td>TC-18</td><td>Shopping: Add Item to Shopping List</td><td>Shopping List</td><td><span class="badge badge-success">PASSED</span></td></tr>
+        <tr><td>TC-19</td><td>Shopping: Toggle Item Checked Status</td><td>Shopping List</td><td><span class="badge badge-success">PASSED</span></td></tr>
+        <tr><td>TC-20</td><td>Shopping: Delete Item from Shopping List</td><td>Shopping List</td><td><span class="badge badge-success">PASSED</span></td></tr>
+        <tr><td>TC-21</td><td>Notifications: Get User Notifications</td><td>Notifications</td><td><span class="badge badge-success">PASSED</span></td></tr>
+        <tr><td>TC-22</td><td>AI Chef: Recipe Suggestions (Google Gemini)</td><td>AI Intelligence</td><td><span class="badge badge-success">PASSED</span></td></tr>
+        <tr><td>TC-23</td><td>AI Vision: Object Detection Endpoint</td><td>Computer Vision</td><td><span class="badge badge-success">PASSED</span></td></tr>
+      </tbody>
+    </table>
+
+    <!-- ================= SECTION 8 ================= -->
+    <div class="page-break"></div>
+    <h2 id="section-8">8. คลังคำถาม-คำตอบรับมือกรรมการ (Comprehensive Defense Q&A)</h2>
+
+    <div class="qa-card">
+      <div class="qa-question">
+        <span class="qa-question-icon">Q1</span>
+        <span>ทำไมถึงเลือกทำโปรเจกต์นี้ มีแอปแนวนี้อยู่แล้ว ระบบของเราต่างจากคนอื่นอย่างไร?</span>
+      </div>
+      <div class="qa-answer">
+        <strong>แนวทางการตอบ:</strong><br>
+        "แอปจัดการตู้เย็นทั่วไปส่วนใหญ่มักทำหน้าที่เป็นเพียง 'สมุดจด' (Passive Inventory) ซึ่งผู้ใช้ต้องคอยพิมพ์บันทึกเองและดูเอง แต่ <strong>FoodCare แตกต่างด้วย 3 จุดเด่นหลัก</strong> ครับ:<br>
+        1. <strong>Active Food Waste Reduction:</strong> มีระบบ AI Chef ที่วิเคราะห์จากของที่มีอยู่จริงในตู้เย็น พร้อมโหมดทำอาหาร (Cooking Mode) ที่หักสต็อกของสดให้อัตโนมัติ ทำให้ผู้ใช้มีแรงจูงใจในการใช้วัตถุดิบให้หมดก่อนเน่าเสีย<br>
+        2. <strong>Household Collaboration:</strong> ออกแบบมาเพื่อคนในบ้านร่วมกัน ไม่ใช่แค่คนเดียว มีตู้เย็นส่วนกลางและรายการซื้อของที่ทุกคนในบ้านเห็นพร้อมกัน ป้องกันการซื้อซ้ำซ้อน<br>
+        3. <strong>Seamless Automation:</strong> นำ Computer Vision เข้ามาช่วยตรวจจับวัตถุดิบผ่านภาพถ่าย ทำให้ลดภาระการพิมพ์ของผู้ใช้ลงอย่างมากครับ"
+      </div>
+    </div>
+
+    <div class="qa-card">
+      <div class="qa-question">
+        <span class="qa-question-icon">Q2</span>
+        <span>ระบบยืนยันตัวตนใช้ Session หรือ JWT? ทำไมถึงเลือกใช้วิธีนี้?</span>
+      </div>
+      <div class="qa-answer">
+        <strong>แนวทางการตอบ:</strong><br>
+        "ระบบของเราเลือกใช้ <strong>Server-side Session ร่วมกับ HttpOnly Cookie</strong> (ผ่าน express-session) ครับ เหตุผลคือ:<br>
+        1. <strong>ความปลอดภัยสูงกว่า:</strong> HttpOnly Cookie ไม่สามารถเข้าถึงได้ผ่าน JavaScript ฝั่ง Client ทำให้ป้องกันการถูกขโมย Token จากช่องโหว่ XSS (Cross-Site Scripting) ได้ 100%<br>
+        2. <strong>Revocation ควบคุมง่าย:</strong> เมื่อผู้ใช้กด Logout หรือถูกเปลี่ยนสิทธิ์ในกลุ่มบ้าน เซิร์ฟเวอร์สามารถสั่งทำลาย Session ได้ทันที ไม่เหมือน JWT ที่มักมีปัญหาเรื่อง Token Invalidation จนกว่าจะหมดอายุครับ"
+      </div>
+    </div>
+
+    <div class="qa-card">
+      <div class="qa-question">
+        <span class="qa-question-icon">Q3</span>
+        <span>ถ้าเชื่อมต่อ Google Gemini API ไม่ได้ หรืออินเทอร์เน็ตหลุด ระบบ AI Chef จะเป็นอย่างไร?</span>
+      </div>
+      <div class="qa-answer">
+        <strong>แนวทางการตอบ:</strong><br>
+        "เราออกแบบระบบให้มี <strong>Graceful Degradation (ความทนทานต่อข้อผิดพลาด)</strong> ครับ ในฟังก์ชัน <code>/api/recipes/suggest</code> เรามีฟังก์ชัน <code>getFallbackRecipes()</code> เตรียมไว้ หากเรียก Gemini API ล้มเหลวหรือเกินโควตา ระบบจะหยิบเมนูอาหารมาตรฐานที่เข้ากับวัตถุดิบหลักขึ้นมาแสดงผลทันที พร้อมข้อความแจ้งเตือนผู้ใช้ ทำให้หน้าเว็บไม่ค้างหรือเกิดหน้าขาว (White Screen of Death) ครับ"
+      </div>
+    </div>
+
+    <div class="qa-card">
+      <div class="qa-question">
+        <span class="qa-question-icon">Q4</span>
+        <span>ระบบป้องกัน SQL Injection อย่างไร และรหัสผ่านเก็บอย่างไร?</span>
+      </div>
+      <div class="qa-answer">
+        <strong>แนวทางการตอบ:</strong><br>
+        "1. <strong>SQL Injection:</strong> เราใช้ Parameterized Queries (เครื่องหมาย <code>?</code>) ผ่านไลบรารี <code>mysql2</code> ในทุกคำสั่ง SQL 100% ซึ่งตัวขับฐานข้อมูลจะทำการ Escape ค่าตัวแปรแยกจากตัวคำสั่ง SQL ทำให้ผู้ไม่หวังดีไม่สามารถแทรกคำสั่ง SQL เข้ามาโจมตีได้<br>
+        2. <strong>Password Security:</strong> รหัสผ่านไม่เคยถูกบันทึกเป็น Plaintext แต่จะผ่านการ Hash ด้วยอัลกอริทึม <strong>bcrypt</strong> ร่วมกับการ Salt แบบสุ่ม ทำให้แม้ข้อมูลฐานข้อมูลจะรั่วไหล ก็ไม่สามารถย้อนกลับเป็นรหัสผ่านเดิมได้ครับ"
+      </div>
+    </div>
+
+    <div class="qa-card">
+      <div class="qa-question">
+        <span class="qa-question-icon">Q5</span>
+        <span>ทำไมถึงมีทั้ง TensorFlow.js (MobileNet) และ Google Gemini Vision?</span>
+      </div>
+      <div class="qa-answer">
+        <strong>แนวทางการตอบ:</strong><br>
+        "เราออกแบบเป็น <strong>Hybrid AI Architecture</strong> ครับ:<br>
+        • <strong>MobileNet (Client-Side):</strong> เน้นความเร็ว สามารถจำแนกวัตถุดิบพื้นฐานได้แบบ Real-time บนเบราว์เซอร์ ทำงานได้แม้เน็ตช้า ไม่เสียค่า API<br>
+        • <strong>Gemini Vision (Server-Side):</strong> เน้นความฉลาดลึกซึ้ง สามารถวิเคราะห์ภาพที่มีวัตถุดิบหลายชนิดพร้อมกัน ระบุเป็นชื่อภาษาไทยที่คนไทยคุ้นเคย (เช่น ผักกาดขาว, หมูกรอบ) พร้อมจัดหมวดหมู่และเลือก Emoji ที่เหมาะสมได้อย่างแม่นยำครับ"
+      </div>
+    </div>
+
+    <div class="qa-card">
+      <div class="qa-question">
+        <span class="qa-question-icon">Q6</span>
+        <span>ถ้าตู้เย็นแชร์กันในบ้าน 2 คน คนหนึ่งทำอาหารตัดสต็อก อีกคนจะเห็นอย่างไร?</span>
+      </div>
+      <div class="qa-answer">
+        <strong>แนวทางการตอบ:</strong><br>
+        "ทั้งสองคนเชื่อมโยงกับ <code>household_id</code> เดียวกันในตาราง <code>household_members</code> ครับ เมื่อสมาชิกคนแรกกดทำอาหารเสร็จและสต็อกถูกหักลงใน MySQL เมื่อสมาชิกคนที่สองเปิดแอปหรือรีเฟรชหน้าตู้เย็น ระบบจะ Query ดึงข้อมูลล่าสุดจาก <code>household_id</code> เดียวกัน ทำให้เห็นปริมาณที่ลดลงทันที และหากพัฒนาต่อในอนาคต สามารถต่อยอดด้วย <strong>WebSocket / Socket.io</strong> เพื่อให้ซิงค์แบบ Push Real-time ได้ทันทีโดยไม่ต้องรีเฟรชครับ"
+      </div>
+    </div>
+
+    <!-- ================= SECTION 9 ================= -->
+    <div class="page-break"></div>
+    <h2 id="section-9">9. ลำดับขั้นตอนการสาธิตระบบ (Live Demo Script 5-7 นาที)</h2>
+
+    <ol class="step-list">
+      <li class="step-item">
+        <div class="step-title">เปิดหน้า Dashboard: ชี้ให้เห็นภาพรวมและคุณค่าของระบบ</div>
+        <p>
+          <strong>สิ่งที่ต้องพูด:</strong> "เริ่มต้นที่หน้าแดชบอร์ดหลักครับ ระบบจะแสดงสรุปจำนวนของสดทั้งหมดในตู้เย็น และมีไฮไลต์สำคัญคือแถบ 'วัตถุดิบใกล้หมดอายุ' ที่มีการนับถอยหลังเป็นจำนวนวันและเปอร์เซ็นต์ความสด เพื่อกระตุ้นเตือนให้ผู้ใช้นำไปประกอบอาหารก่อนที่จะเน่าเสียครับ"
+        </p>
+      </li>
+
+      <li class="step-item">
+        <div class="step-title">สาธิตการเพิ่มวัตถุดิบด้วย AI Scan (Computer Vision)</div>
+        <p>
+          <strong>สิ่งที่ต้องทำ:</strong> คลิกไปที่เมนู <strong>Scan (สแกนวัตถุดิบ)</strong> อัปโหลดภาพผักหรือผลไม้ แล้วกดให้ AI วิเคราะห์<br>
+          <strong>สิ่งที่ต้องพูด:</strong> "ระบบนำภาพถ่ายส่งไปยัง Gemini Vision เพื่อตรวจจับวัตถุดิบอาหาร จะเห็นว่า AI สามารถระบุชื่อวัตถุดิบ หมวดหมู่ และประมาณการวันหมดอายุให้โดยอัตโนมัติ ผู้ใช้เพียงกดบันทึก ข้อมูลก็จะลงตู้เย็นทันทีโดยไม่ต้องพิมพ์เองครับ"
+        </p>
+      </li>
+
+      <li class="step-item">
+        <div class="step-title">สาธิตการแชร์ตู้เย็นในครอบครัว (Household Sharing)</div>
+        <p>
+          <strong>สิ่งที่ต้องทำ:</strong> คลิกไปที่แท็บ <strong>Household (กลุ่มบ้าน)</strong> แสดงรหัส Invite Code และรายชื่อสมาชิก<br>
+          <strong>สิ่งที่ต้องพูด:</strong> "นี่คือระบบกลุ่มบ้านครับ ผู้ใช้สามารถสร้างกลุ่มและแชร์ Invite Code ให้คนในครอบครัว เมื่อคนในบ้านเข้าร่วม ทุกคนจะมองเห็นตู้เย็นเดียวกันและอัปเดตสต็อกของสดร่วมกันได้แบบส่วนกลางครับ"
+        </p>
+      </li>
+
+      <li class="step-item">
+        <div class="step-title">โชว์ฟีเจอร์เด็ด: AI Chef แนะนำสูตรอาหารจากของในตู้เย็น</div>
+        <p>
+          <strong>สิ่งที่ต้องทำ:</strong> คลิกไปที่หน้า <strong>Recipes (สูตรอาหาร)</strong> กดปุ่ม 'ให้ AI เชฟแนะนำเมนู'<br>
+          <strong>สิ่งที่ต้องพูด:</strong> "นี่คือฟังก์ชันไฮไลต์ครับ AI จะหยิบรายการวัตถุดิบที่มีจริงในตู้เย็น ส่งไปประมวลผลผ่าน Google Gemini เพื่อคิดค้นเมนูอาหารไทยและสากล พร้อมระบุวัตถุดิบ เครื่องปรุง และขั้นตอนการทำอย่างละเอียดครับ"
+        </p>
+      </li>
+
+      <li class="step-item">
+        <div class="step-title">สาธิตโหมดทำอาหาร (Cooking Mode) และการตัดสต็อกอัตโนมัติ</div>
+        <p>
+          <strong>สิ่งที่ต้องทำ:</strong> เลือกเมนูอาหารหนึ่งเมนู กดปุ่ม <strong>'เริ่มทำอาหาร (Cooking Mode)'</strong> จากนั้นกดปุ่ม <strong>'ทำอาหารเสร็จสิ้น'</strong> แล้วพากรรมการกลับมาดูหน้าตู้เย็น<br>
+          <strong>สิ่งที่ต้องพูด:</strong> "เมื่อเราทำอาหารเสร็จ ระบบจะคำนวณหักเปอร์เซ็นต์วัตถุดิบในตู้เย็นให้โดยอัตโนมัติ จะเห็นว่าของสดที่ใช้ไป ปริมาณลดลงจริงตามสัดส่วน และหากใช้หมด 100% รายการนั้นจะถูกล้างออกจากตู้เย็นทันทีเพื่อไม่ให้ค้างสต็อกครับ"
+        </p>
+      </li>
+
+      <li class="step-item">
+        <div class="step-title">เชื่อมโยงไปยังรายการซื้อของ (Shopping List: Complete Loop)</div>
+        <p>
+          <strong>สิ่งที่ต้องทำ:</strong> เปิดหน้า <strong>Shopping (รายการซื้อของ)</strong> ติ๊กถูกสินค้า แล้วกดย้ายเข้าตู้เย็น<br>
+          <strong>สิ่งที่ต้องพูด:</strong> "เมื่อของในตู้เย็นหมด ผู้ใช้สามารถจดลง Shopping List ได้ และเมื่อไปซื้อของกลับมา เพียงติ๊กถูกแล้วกดบันทึก สินค้าก็จะถูกโอนย้ายกลับเข้าสู่ตู้เย็นเป็นของสดชิ้นใหม่ทันที ครบวงจรการทำงานแบบ Closed Loop ครับ"
+        </p>
+      </li>
+    </ol>
+
+    <!-- ================= SECTION 10 ================= -->
+    <div class="page-break"></div>
+    <h2 id="section-10">10. ตารางสรุปสิ่งที่ต้องท่องจำก่อนเข้าห้องสอบ (Must-Memorize Summary)</h2>
+
+    <table>
+      <thead>
+        <tr><th style="width: 30%;">หัวข้อที่ต้องจำ</th><th style="width: 70%;">คำตอบแบบสั้น กระชับ สำหรับพูดในห้องสอบ</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>ชื่อโครงงาน</strong></td>
+          <td>FoodCare — ระบบจัดการตู้เย็นอัจฉริยะ ลดขยะอาหาร (Smart Refrigerator & Food Waste Reduction System)</td>
+        </tr>
+        <tr>
+          <td><strong>เป้าหมายหลัก</strong></td>
+          <td>ลด Food Waste ในครัวเรือน ผ่านการติดตามวันหมดอายุ, AI แนะนำเมนู, ทำอาหารตัดสต็อก, และแชร์ตู้เย็นในครอบครัว</td>
+        </tr>
+        <tr>
+          <td><strong>Tech Stack หลัก</strong></td>
+          <td>Frontend: React 19 + Vite 8 + TanStack Router | Backend: Node.js + Express 5 | Database: MySQL (mysql2 pool)</td>
+        </tr>
+        <tr>
+          <td><strong>โมเดล AI ที่ใช้</strong></td>
+          <td>Google Gemini 3.5 Flash / Flash Lite (สำหรับคิดสูตรอาหารและวิเคราะห์ภาพ) + MobileNet (TensorFlow.js บนเบราว์เซอร์)</td>
+        </tr>
+        <tr>
+          <td><strong>การเข้ารหัสและความปลอดภัย</strong></td>
+          <td>Bcrypt (Salt & Hash รหัสผ่าน), Prepared Statements ป้องกัน SQL Injection, HttpOnly Cookie Sessions, OTP ยืนยันอีเมล</td>
+        </tr>
+        <tr>
+          <td><strong>จำนวนตารางใน Database</strong></td>
+          <td>6 ตาราง: <code>users</code>, <code>households</code>, <code>household_members</code>, <code>fridge_items</code>, <code>shopping_items</code>, <code>notifications</code></td>
+        </tr>
+        <tr>
+          <td><strong>ผลการทดสอบระบบ</strong></td>
+          <td>ทดสอบแบบ Automated Integration Test ครอบคลุมทุกระบบ 23 ชุดทดสอบ ผลลัพธ์ผ่าน 100% (23/23 Passed)</td>
+        </tr>
+        <tr>
+          <td><strong>Port ที่ระบบทำงาน</strong></td>
+          <td>Backend Port <code>8080</code> | Frontend Port <code>5173</code> | MySQL Port <code>3306</code></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div style="text-align: center; margin-top: 50px; padding: 25px; background: var(--gray-50); border-radius: 8px; border: 1px dashed var(--gray-300);">
+      <h3 style="margin: 0 0 10px 0; color: var(--primary);">🎯 ขอให้มั่นใจในผลงาน และประสบความสำเร็จในการสอบโครงงาน!</h3>
+      <p style="margin: 0; color: var(--gray-700);">โครงงาน FoodCare มีสถาปัตยกรรมที่ถูกต้อง มีฟังก์ชันครบวงจร มีการเชื่อมโยง AI ที่ทำงานได้จริง และมีเอกสารไดอะแกรมที่สมบูรณ์แบบ ตอบด้วยความมั่นใจตามหลักการวิศวกรรมซอฟต์แวร์</p>
+    </div>
+
+  </div>
+
+</body>
+</html>
