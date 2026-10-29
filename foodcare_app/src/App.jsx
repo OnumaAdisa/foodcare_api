@@ -17,34 +17,52 @@ import FridgeDetailPage from "./routes/fridge_detail";
 import ScanPage from "./routes/scan";            
 
 function App() {
-  const [screen, setScreen] = useState("login"); 
+  const [screen, setScreen] = useState(() => {
+    // ถ้ามีข้อมูลเซฟไว้ในเครื่อง ให้เริ่มที่หน้า main_app ทันที
+    return localStorage.getItem("foodcare_user") ? "main_app" : "login";
+  }); 
   const [currentTab, setCurrentTab] = useState("home");
   const [selectedRecipeId, setSelectedRecipeId] = useState(null); 
   const [selectedFridgeItemId, setSelectedFridgeItemId] = useState(null); 
 
-  // 🟢 1. เพิ่มสเตทส่วนกลางสำหรับเก็บข้อมูลผู้ใช้งานที่ทำการล็อกอินสำเร็จ
-  const [currentUser, setCurrentUser] = useState(null); 
+  // ดึงข้อมูลผู้ใช้จาก localStorage มาเป็นค่าเริ่มต้น ป้องกันค่าหลุดตอน F5
+  const [currentUser, setCurrentUser] = useState(() => {
+    try {
+      const saved = localStorage.getItem("foodcare_user");
+      return saved ? JSON.parse(saved) : null;
+    } catch {
+      return null;
+    }
+  }); 
+
+  const saveUserData = (userData) => {
+    const normalizedUser = {
+      ...userData,
+      id: userData?.id ?? userData?.user_id ?? userData?.userId,
+      user_id: userData?.user_id ?? userData?.id ?? userData?.userId,
+      householdId: userData?.householdId ?? userData?.household_id ?? null,
+      household_id: userData?.household_id ?? userData?.householdId ?? null,
+    };
+    setCurrentUser(normalizedUser);
+    localStorage.setItem("foodcare_user", JSON.stringify(normalizedUser));
+  };
 
   useEffect(() => {
+    // ตรวจสอบเซสชันกับหลังบ้าน (ตรวจทั้ง /api/auth/session และ /api/me)
     fetch(`${API_BASE}/api/auth/session`, { credentials: "include" })
-      .then((res) => res.ok ? res.json() : Promise.reject(new Error("No session")))
+      .then((res) => (res.ok ? res.json() : Promise.reject()))
       .then((data) => {
         if (data.success && data.user) {
-          const normalizedUser = {
-            ...data.user,
-            id: data.user.id ?? data.user.user_id ?? data.user.userId,
-            user_id: data.user.user_id ?? data.user.id ?? data.user.userId,
-            householdId: data.user.householdId ?? data.user.household_id ?? null,
-            household_id: data.user.household_id ?? data.user.householdId ?? null,
-          };
-          setCurrentUser(normalizedUser);
+          saveUserData(data.user);
           setScreen("main_app");
-          setCurrentTab("home");
         }
       })
       .catch(() => {
-        setCurrentUser(null);
-        setScreen("login");
+        // หากไม่มี session ในเซิร์ฟเวอร์ ให้เคลียร์ค่าออก
+        if (!localStorage.getItem("foodcare_user")) {
+          setCurrentUser(null);
+          setScreen("login");
+        }
       });
   }, []);
 
@@ -82,30 +100,24 @@ function App() {
     setScreen("recipe_detail");
   };
 
-  // 🟢 2. ตอนออกจากระบบ ให้เคลียร์ข้อมูลผู้ใช้ทิ้งเพื่อความปลอดภัย
   const handleLogout = async () => {
     try {
       await fetch(`${API_BASE}/api/auth/logout`, { method: "POST", credentials: "include" });
     } catch (error) {
       console.warn("Logout request failed:", error);
     }
+    localStorage.removeItem("foodcare_user");
     setCurrentUser(null);
     setScreen("login");
     setCurrentTab("home");
   };
 
-  // 🟢 3. หน้า Login: รับข้อมูลยูสเซอร์จริงจากหลังบ้าน (แกะมาจากคำสั่ง res.json()) มาเก็บในสเตทกลาง
+  // หน้า Login
   if (screen === "login") {
     return (
       <Login 
         onLogin={(userData) => { 
-          setCurrentUser({
-            ...userData,
-            id: userData?.id ?? userData?.user_id ?? userData?.userId,
-            user_id: userData?.user_id ?? userData?.id ?? userData?.userId,
-            householdId: userData?.householdId ?? userData?.household_id ?? null,
-            household_id: userData?.household_id ?? userData?.householdId ?? null,
-          });
+          saveUserData(userData);
           setScreen("main_app"); 
           setCurrentTab("home"); 
         }} 
@@ -114,18 +126,13 @@ function App() {
     );
   }
 
+  // หน้า Signup
   if (screen === "signup") {
     return (
       <Signup
         onSwitchToLogin={() => setScreen("login")}
         onLogin={(userData) => {
-          setCurrentUser({
-            ...userData,
-            id: userData?.id ?? userData?.user_id ?? userData?.userId,
-            user_id: userData?.user_id ?? userData?.id ?? userData?.userId,
-            householdId: userData?.householdId ?? userData?.household_id ?? null,
-            household_id: userData?.household_id ?? userData?.householdId ?? null,
-          });
+          saveUserData(userData);
           setScreen("main_app");
           setCurrentTab("home");
         }}
@@ -133,6 +140,7 @@ function App() {
     );
   }
   
+  // หน้าจอหลักของแอป
   if (screen === "main_app") {
     if (currentTab === "fridge") return <Fridge currentTab={currentTab} onNavigate={handleNavigate} onLogout={handleLogout} user={currentUser} />;
     if (currentTab === "recipes") return <Recipes currentTab={currentTab} onNavigate={handleNavigate} onSelectRecipe={handleSelectRecipe} user={currentUser} />;
@@ -140,7 +148,6 @@ function App() {
     if (currentTab === "alerts") return <AlertsPage onNavigate={handleNavigate} user={currentUser} />;
     if (currentTab === "quick-add") return <QuickAddPage onNavigate={handleNavigate} user={currentUser} />;
 
-    // default หน้าแรก (home หรือ profile): 🟢 ยิง Props ตัวแปร user ส่งต่อไปยังหน้าจอ Dashboard
     return (
       <Dashboard 
         currentTab={currentTab} 
@@ -155,7 +162,7 @@ function App() {
   if (screen === "recipe_detail") return <RecipeDetail recipeId={selectedRecipeId} onBack={() => { setScreen("main_app"); setCurrentTab("recipes"); }} onStartCooking={() => setScreen("cooking")} user={currentUser} />;
   if (screen === "cooking") return <CookingPage recipeId={selectedRecipeId} onBack={() => setScreen("recipe_detail")} onNavigateAfterDone={(targetTab) => handleNavigate(targetTab)} user={currentUser} />;
   if (screen === "quick-add") return <QuickAddPage onNavigate={handleNavigate} user={currentUser} />;
-  if (screen === "household") return <HouseholdPage onNavigate={handleNavigate} user={currentUser} />;
+  if (screen === "household") return <HouseholdPage onNavigate={handleNavigate} user={currentUser} onUpdateUser={saveUserData} />;
   if (screen === "fridge_detail") return <FridgeDetailPage itemId={selectedFridgeItemId} onNavigate={handleNavigate} user={currentUser} />;
 
   if (screen === "scan") {

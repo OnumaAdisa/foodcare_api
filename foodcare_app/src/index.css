@@ -6,4 +6,9 @@
     --color-primary: #3B82F6;
     --font-sans: "Sarabun", "Inter", sans-serif;
   }
+  body {
+    background-color: #ffffff;
+    margin: 0;
+    padding: 0;
+  }
 }
