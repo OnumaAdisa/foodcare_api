@@ -18,5 +18,8 @@
     "express-session": "^1.18.1",
     "mysql2": "^3.22.5",
     "nodemailer": "^6.9.16"
+  },
+  "devDependencies": {
+    "jimp": "^1.6.1"
   }
 }
